@@ -1,0 +1,42 @@
+// size
+$font-size-base: 16px;
+
+// font
+$font-serif-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+  'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+// colors
+$color-base: #f6f6f6;
+$color-primary: #2597c7;
+$color-success: #1a8752;
+$color-danger: #dc3545;
+$color-gray: #6c757d;
+$color-white: #fff;
+$color-black: #000;
+
+// body
+$body-font-family: $font-serif-base;
+$body-font-size: 1rem;
+$body-font-weight: 400;
+$body-font-color: $color-black;
+$body-line-height: 1.5;
+$body-background-color: $color-white;
+
+// button
+// button focus background: darken($color-primary, 10%);
+
+// header
+$header-height: 3.75rem;
+// background: #333
+
+// table
+// table strip: #F9F9F9
+// table selected: #FFF4D3
+$table-border-width: 1px;
+$table-border-style: solid;
+$table-border-color: #dee2e6;
+
+// form
+// select background: #EEEEEE
+// input background: #fff

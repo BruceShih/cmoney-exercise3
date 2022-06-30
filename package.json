@@ -5,9 +5,19 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "server": "json-server --watch db.json",
+    "start": "concurrently \"npm run serve && npm run server\""
+  },
+  "engine": {
+    "node": ">=16",
+    "npm": ">=8.3.0"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.6.3",
+    "@vueuse/core": "^8.7.5",
+    "@vueuse/integrations": "^8.7.5",
+    "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
@@ -22,10 +32,13 @@
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-airbnb": "^6.0.0",
+    "@vue/runtime-dom": "^3.2.37",
+    "concurrently": "^7.2.2",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "json-server": "^0.17.0",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
     "vue-template-compiler": "^2.6.14"
