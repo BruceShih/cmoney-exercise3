@@ -5729,5 +5729,12 @@
     "username": "ooxx@gmail.com",
     "password": "ooxx",
     "f2eToken": "74364e96174afa7d17ee52dd2c9c7a4651fe1254f471a78bda0190135dcd3480"
-  }
+  },
+  "users": [
+    {
+      "email": "test@email.com",
+      "password": "$2a$10$upRSa67YJwffOk/343DkDu51VHhCPDSezw8ma.8xjAHWhWLVI5hFa",
+      "id": 1
+    }
+  ]
 }

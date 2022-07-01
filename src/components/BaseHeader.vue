@@ -17,29 +17,14 @@
         Customer
       </RouterLink>
     </nav>
-    <BaseButton
-      variant="base"
-      @click="handleLogin"
+    <RouterLink
+      class="btn btn-base"
+      to="/login"
     >
       登入
-    </BaseButton>
+    </RouterLink>
   </header>
 </template>
 
-<script>
-import BaseButton from './BaseButton.vue';
-
-export default {
-  name: 'BaseHeader',
-  components: { BaseButton },
-  setup() {
-    const handleLogin = () => {
-      console.log('login');
-    };
-
-    return {
-      handleLogin,
-    };
-  },
-};
+<script setup>
 </script>
