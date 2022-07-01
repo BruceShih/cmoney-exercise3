@@ -1,34 +1,51 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store';
 
 Vue.use(VueRouter);
 
 const authGuard = (to, from, next) => {
-  next();
+  if (store.getters['auth/isAuthenticated'] === true) next();
+  else next('/login');
 };
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue'),
+    components: {
+      default: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue'),
+      header: () => import(/* webpackChunkName: "header" */ '../components/BaseHeader.vue'),
+    },
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue'),
+    components: {
+      default: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue'),
+    },
   },
   {
     path: '/admin',
     name: 'admin',
-    component: () => import(/* webpackChunkName: "admin" */ '../views/AdminView.vue'),
+    components: {
+      default: () => import(/* webpackChunkName: "admin" */ '../views/AdminView.vue'),
+      header: () => import(/* webpackChunkName: "header" */ '../components/BaseHeader.vue'),
+    },
     beforeEnter: authGuard,
   },
   {
     path: '/customer',
     name: 'customer',
-    component: () => import(/* webpackChunkName: "customer" */ '../views/CustomerView.vue'),
+    components: {
+      default: () => import(/* webpackChunkName: "customer" */ '../views/CustomerView.vue'),
+      header: () => import(/* webpackChunkName: "header" */ '../components/BaseHeader.vue'),
+    },
     beforeEnter: authGuard,
+  },
+  {
+    path: '*',
+    redirect: '/',
   },
 ];
 
