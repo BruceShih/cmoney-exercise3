@@ -1,5 +1,10 @@
-@import './normalize';
-@import './variables';
+@import 'normalize';
+@import 'functions';
+@import 'variables';
+
+// component import
+@import 'button';
+@import 'header';
 
 *,
 *::before,
@@ -18,10 +23,11 @@ html {
 }
 
 body {
+  margin: $body-margin;
   font-family: $body-font-family;
   font-size: $body-font-size;
   font-weight: $body-font-weight;
   line-height: $body-line-height;
   color: $body-font-color;
-  background-color: $body-background-color;
+  background-color: $body-bg-color;
 }

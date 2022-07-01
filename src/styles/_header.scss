@@ -1,0 +1,25 @@
+@import "../styles/variables";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $header-padding-y $header-padding-x;
+  background-color: $header-bg-color;
+  height: $header-height;
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-nav > a {
+    margin: $header-item-margin-y $header-item-margin-x;
+    color: $header-color;
+    text-decoration: none;
+
+    &:hover, &.router-link-exact-active {
+      color: $header-hover-color;
+    }
+  }
+}
