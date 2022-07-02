@@ -5735,6 +5735,11 @@
       "email": "test@email.com",
       "password": "$2a$10$upRSa67YJwffOk/343DkDu51VHhCPDSezw8ma.8xjAHWhWLVI5hFa",
       "id": 1
+    },
+    {
+      "email": "olivier@mail.com",
+      "password": "$2a$10$oUaowQFjv7fgb1EKhzGr2u9P1Usze8dSb94YAWN.ZulySG4w92ZYS",
+      "id": 2
     }
   ]
 }

@@ -6,9 +6,19 @@
   background-color: $header-bg-color;
   height: $header-height;
 
-  .header-logo {
+  .header-logo,
+  .header-profile {
     display: flex;
     align-items: center;
+    width: 145px;
+  }
+
+  .header-logo {
+    justify-content: flex-start;
+  }
+
+  .header-profile {
+    justify-content: flex-end;
   }
 
   .header-nav > a {

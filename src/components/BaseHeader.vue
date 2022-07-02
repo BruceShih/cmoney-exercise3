@@ -6,25 +6,60 @@
         alt="Logo"
       >
     </div>
-    <nav class="header-nav">
+    <nav
+      v-if="isLoggedIn"
+      class="header-nav"
+    >
       <RouterLink to="/">
-        Home
+        首頁
       </RouterLink>
       <RouterLink to="/admin">
-        Admin
+        會員列表
       </RouterLink>
       <RouterLink to="/customer">
-        Customer
+        自選清單
       </RouterLink>
     </nav>
-    <RouterLink
-      class="btn btn-base"
-      to="/login"
-    >
-      登入
-    </RouterLink>
+    <div class="header-profile">
+      <BaseButton
+        v-if="isAdminPage && isLoggedIn"
+        variant="white"
+        class="mr-2"
+      >
+        +
+      </BaseButton>
+      <BaseButton
+        v-if="isLoggedIn"
+        variant="primary"
+        @click="doLogout"
+      >
+        登出
+      </BaseButton>
+      <RouterLink
+        v-else
+        class="btn btn-white"
+        to="/login"
+      >
+        登入
+      </RouterLink>
+    </div>
   </header>
 </template>
 
 <script setup>
+import { computed, getCurrentInstance } from 'vue';
+import useAuthService from '../composables/useAuthService';
+import BaseButton from './BaseButton.vue';
+import store from '../store';
+
+const vm = getCurrentInstance();
+const { logout } = useAuthService();
+
+const isAdminPage = computed(() => vm.proxy.$route.path === '/admin');
+const isLoggedIn = computed(() => store.getters['authStore/isAuthenticated']);
+
+const doLogout = () => {
+  logout();
+  vm.proxy.$router.push('/login');
+};
 </script>

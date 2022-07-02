@@ -1,0 +1,130 @@
+@mixin text-contrast($color) {
+  color: contract($color);
+}
+
+@mixin border-contrast($color) {
+  border-color: contract($color);
+}
+
+@function contract($color) {
+  $color-brightness: round(
+    (red($color) * 299)+ (green($color) * 587)+ (blue($color) * 114)/1000
+  );
+  $light-color: round(
+    (red(#ffffff) * 299)+ (green(#ffffff) * 587)+ (blue(#ffffff) * 114)/1000
+  );
+  @if abs($color-brightness) < ($light-color/2) {
+    @return white;
+  } @else {
+    @return black;
+  }
+}
+
+.btn {
+  display: inline-block;
+  font-weight: $body-font-weight;
+  color: $body-font-color;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  user-select: none;
+  background-color: transparent;
+  border: $button-border-width solid $button-border-color;
+  padding: $button-padding-y $button-padding-x;
+  font-size: $body-font-size;
+  line-height: $body-line-height;
+  border-radius: $button-border-radius;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus,
+  &.focus {
+    outline: 0;
+  }
+
+  &.disabled,
+  &:disabled {
+    opacity: $button-disabled-opacity;
+  }
+
+  &:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include text-contrast($value);
+    background-color: $value;
+    border-color: $value;
+
+    &:hover {
+      @include text-contrast($value);
+      background-color: darken($value, 15%);
+      border-color: darken($value, 15%);
+    }
+
+    &:focus,
+    &.focus {
+      @include text-contrast($value);
+      background-color: darken($value, 10%);
+      border-color: darken($value, 10%);
+      box-shadow: 0 0 0 0.2rem rgba(darken($value, 10%), 0.5);
+    }
+
+    &.disabled,
+    &:disabled {
+      @include text-contrast($value);
+      background-color: lighten($value, 15%);
+      border-color: lighten($value, 15%);
+    }
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      @include text-contrast($value);
+      background-color: darken($value, 15%);
+      border-color: darken($value, 15%);
+    }
+
+    &:not(:disabled):not(.disabled):active:focus,
+    &:not(:disabled):not(.disabled).active:focus {
+      box-shadow: 0 0 0 0.2rem rgba(darken($value, 10%), 0.5);
+    }
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    color: $value;
+    border-color: $value;
+
+    &:hover {
+      @include text-contrast($value);
+      background-color: $value;
+      border-color: $value;
+    }
+
+    &:focus,
+    &.focus {
+      box-shadow: 0 0 0 0.2rem rgba(darken($value, 10%), 0.5);
+    }
+
+    &.disabled,
+    &:disabled {
+      color: lighten($value, 15%);
+      background-color: transparent;
+    }
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      @include text-contrast($value);
+      background-color: $value;
+      border-color: $value;
+    }
+
+    &:not(:disabled):not(.disabled):active:focus,
+    &:not(:disabled):not(.disabled).active:focus {
+      box-shadow: 0 0 0 0.2rem rgba(darken($value, 10%), 0.5);
+    }
+  }
+}

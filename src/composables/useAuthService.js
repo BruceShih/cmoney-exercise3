@@ -6,10 +6,11 @@ import store from '../store';
 export default function useAuthService() {
   const login = (email, password) => {
     const instance = axios.create({
+      baseURL: 'http://localhost:3000',
       headers: { 'Content-Type': 'application/json' },
     });
 
-    const { data, isFinished } = useAxios(
+    return useAxios(
       '/signin',
       {
         method: 'POST',
@@ -17,30 +18,15 @@ export default function useAuthService() {
       },
       instance,
     );
-
-    if (isFinished.value) {
-      const { get, set } = useCookies(['stegosaurus']);
-
-      if (typeof get('stegosaurus') === 'string' && get('stegosaurus')) {
-        set('stegosaurus', JSON.stringify(data));
-        store.commit('auth/setUser', data);
-        return true;
-      }
-    }
-
-    return false;
   };
 
   const logout = () => {
     const { get, remove } = useCookies(['stegosaurus']);
 
-    if (typeof get('stegosaurus') === 'string' && get('stegosaurus')) {
+    if (get('stegosaurus')) {
       remove('stegosaurus');
-      store.commit('auth/clearUser');
-      return true;
+      store.commit('authStore/clearUser');
     }
-
-    return false;
   };
 
   return {
