@@ -1,10 +1,13 @@
 @import 'variables';
 
 @import 'button';
+@import 'card';
 @import 'form';
 @import 'header';
 @import 'notification';
+@import 'paginator';
 @import 'utilities';
+@import 'wrapper';
 
 * {
   font-family: $font-serif-base;
@@ -28,6 +31,7 @@ body {
   background-color: $body-bg-color;
 }
 
-#app, main {
+#app,
+main {
   height: 100%;
 }

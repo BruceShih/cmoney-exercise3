@@ -1,14 +1,11 @@
-import axios from 'axios';
 import { useAxios } from '@vueuse/integrations/useAxios';
 import { useCookies } from '@vueuse/integrations/useCookies';
+import useBaseAxiosInstance from './useBaseAxiosInstance';
 import store from '../store';
 
 export default function useAuthService() {
   const login = (email, password) => {
-    const instance = axios.create({
-      baseURL: 'http://localhost:3000',
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const instance = useBaseAxiosInstance();
 
     return useAxios(
       '/signin',
@@ -16,7 +13,7 @@ export default function useAuthService() {
         method: 'POST',
         data: { email, password },
       },
-      instance,
+      instance.value,
     );
   };
 

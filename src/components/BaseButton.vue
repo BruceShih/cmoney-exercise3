@@ -1,8 +1,8 @@
 <template>
   <button
     type="button"
-    class="btn"
     :class="classes"
+    :disabled="disabled"
     @click="handleClick"
   >
     <slot />
@@ -22,18 +22,23 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emits = defineEmits(['click']);
 
 // reactivities
 const classes = computed(() => {
-  const classList = [];
+  const classList = ['btn'];
   if (props.variant) {
-    classList.push(`btn-${props.variant}`);
-  }
-  if (props.outline) {
-    classList.push(`btn-outline-${props.variant}`);
+    if (props.outline) {
+      classList.push(`btn-outline-${props.variant}`);
+    } else {
+      classList.push(`btn-${props.variant}`);
+    }
   }
   return classList;
 });

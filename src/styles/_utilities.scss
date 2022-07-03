@@ -14,6 +14,10 @@
   flex-direction: column;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .justify-start {
   justify-content: flex-start;
 }
@@ -58,114 +62,13 @@
   align-items: baseline;
 }
 
-.flex-wrap {
-  flex-wrap: wrap;
+.grid {
+  display: grid;
+  gap: 2rem;
 }
 
-@media (max-width: 481px) {
-  .order-xs-1 {
-    order: -1;
-  }
-}
-
-.position-relative {
-  position: relative;
-}
-
-.font-size-largest {
-  font-size: var(--font-size-largest);
-}
-
-.font-size-larger {
-  font-size: var(--font-size-larger);
-}
-
-.font-size-large {
-  font-size: var(--font-size-large);
-}
-
-.font-size-small {
-  font-size: var(--font-size-small);
-}
-
-.font-size-smaller {
-  font-size: var(--font-size-smaller);
-}
-
-.font-weight-thin {
-  font-weight: var(--font-weight-thin);
-}
-
-.font-weight-normal {
-  font-weight: var(--font-weight-normal);
-}
-
-.font-weight-bold {
-  font-weight: var(--font-weight-bold);
-}
-
-.text-center {
-  text-align: center;
-}
-
-.color-primary {
-  color: var(--color-primary);
-}
-
-.color-secondary {
-  color: var(--color-secondary);
-}
-
-.color-purple {
-  color: var(--color-purple);
-}
-
-.color-white {
-  color: var(--color-white);
-}
-
-.color-black {
-  color: var(--color-black);
-}
-
-.color-gray {
-  color: var(--color-gray);
-}
-
-.color-lightgray {
-  color: var(--color-lightgray);
-}
-
-.bg-primary {
-  background-color: var(--background-primary);
-}
-
-.bg-secondary {
-  background-color: var(--background-secondary);
-}
-
-.bg-purple {
-  background-color: var(--background-purple);
-}
-
-.bg-white {
-  background-color: var(--background-white);
-}
-
-.bg-black {
-  background-color: var(--background-black);
-}
-
-.bg-gray {
-  background-color: var(--background-gray);
-}
-
-.bg-lightgray {
-  background-color: var(--background-lightgray);
-}
-
-.bg-transparent {
-  background-color: var(--background-transparent);
+.grid-8 {
+  grid-template-columns: repeat(8, 1fr);
 }
 
 .p-0 {
@@ -586,12 +489,4 @@
 
 .mb-6 {
   margin-bottom: 5rem;
-}
-
-.elevation-1 {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
-
-.elevation-2 {
-  box-shadow: 0px 0px 100px 0px rgba(0, 0, 0, 0.1);
 }

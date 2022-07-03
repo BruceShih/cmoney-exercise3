@@ -70,6 +70,10 @@ $button-box-shadow: inset 0 1px 0 rgba($color-white, 0.15),
   0 1px 1px rgba($color-black, 0.075);
 $button-focus-width: 0.25rem;
 
+// card
+$card-bg-color: transparent;
+$card-border-radius: $border-radius;
+
 // header
 $header-padding-x: 1rem;
 $header-padding-y: 0.5rem;
