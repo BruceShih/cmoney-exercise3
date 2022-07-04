@@ -31,6 +31,10 @@ const routes = [
     components: {
       default: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue'),
     },
+    beforeEnter: (to, from, next) => {
+      if (store.getters['authStore/isAuthenticated'] === true) next('/');
+      else next();
+    },
   },
   {
     path: '/admin',

@@ -22,7 +22,7 @@
     </nav>
     <div class="header-profile">
       <BaseButton
-        v-if="isAdminPage && isLoggedIn"
+        v-if="isLoggedIn"
         variant="white"
         class="mr-2"
       >
@@ -55,7 +55,7 @@ import store from '../store';
 const vm = getCurrentInstance();
 const { logout } = useAuthService();
 
-const isAdminPage = computed(() => vm.proxy.$route.path === '/admin');
+// const isAdminPage = computed(() => vm.proxy.$route.path === '/admin');
 const isLoggedIn = computed(() => store.getters['authStore/isAuthenticated']);
 
 const doLogout = () => {

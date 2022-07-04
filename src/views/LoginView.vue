@@ -1,57 +1,59 @@
 <template>
-  <form
-    class="login-form"
-    @submit.prevent="submit"
-  >
-    <img
-      class="mb-4"
-      src="../assets/logo.png"
-      alt="Logo"
+  <div class="wrapper">
+    <form
+      class="login-form"
+      @submit.prevent="submit"
     >
-    <fieldset class="login-form-fields">
-      <legend>請登入</legend>
-      <label for="email">
-        <span>Email</span>
-        <input
-          id="email"
-          v-model="email"
-          class="form-control"
-          type="text"
-          name="email"
-          placeholder="olivier@mail.com"
-          required
-        >
-      </label>
-      <label for="password">
-        <span>Password</span>
-        <input
-          id="password"
-          v-model="password"
-          class="form-control"
-          type="password"
-          name="password"
-          placeholder="somepassword"
-          required
-        >
-      </label>
+      <img
+        class="mb-4"
+        src="../assets/logo.png"
+        alt="Logo"
+      >
+      <fieldset class="login-form-fields">
+        <legend>請登入</legend>
+        <label for="email">
+          <span>Email</span>
+          <input
+            id="email"
+            v-model="email"
+            class="form-control"
+            type="text"
+            name="email"
+            placeholder="olivier@mail.com"
+            required
+          >
+        </label>
+        <label for="password">
+          <span>Password</span>
+          <input
+            id="password"
+            v-model="password"
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="somepassword"
+            required
+          >
+        </label>
 
-      <div class="login-form-buttons">
-        <button
-          class="btn btn-primary"
-          type="submit"
-        >
-          送出
-        </button>
-        <input
-          class="btn btn-outline-primary"
-          type="reset"
-          value="清除"
-        >
-      </div>
-    </fieldset>
+        <div class="login-form-buttons">
+          <button
+            class="btn btn-primary"
+            type="submit"
+          >
+            送出
+          </button>
+          <input
+            class="btn btn-outline-primary"
+            type="reset"
+            value="清除"
+          >
+        </div>
+      </fieldset>
 
-    <BaseNotification ref="notification" />
-  </form>
+      <BaseNotification ref="notification" />
+    </form>
+  </div>
 </template>
 
 <script setup>
@@ -87,7 +89,7 @@ const submit = () => {
         });
         store.commit('authStore/setUser', data.value);
         notification.value.show('success', '登入成功').then(() => {
-          vm.proxy.$router.push('/admin');
+          vm.proxy.$router.push('/');
         });
       }
     },
