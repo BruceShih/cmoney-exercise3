@@ -119,6 +119,10 @@
   gap: 2rem;
 }
 
+.grid-column-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .grid-column-8 {
   grid-template-columns: repeat(8, 1fr);
 }

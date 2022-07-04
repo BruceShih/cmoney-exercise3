@@ -59,6 +59,19 @@ export default function useEmployeeService() {
     );
   };
 
+  const createEmployee = (employee) => {
+    const instance = useBaseAxiosInstance();
+
+    return useAxios(
+      '/employees',
+      {
+        method: 'POST',
+        data: employee,
+      },
+      instance.value,
+    );
+  };
+
   const updateEmployeeById = (id, employee) => {
     const instance = useBaseAxiosInstance();
 
@@ -90,6 +103,7 @@ export default function useEmployeeService() {
     getEmployeesWithPaging,
     getEmployeesById,
     getEmployeesByCountryAndGenderWithPaging,
+    createEmployee,
     updateEmployeeById,
     deleteEmployeeById,
   };
