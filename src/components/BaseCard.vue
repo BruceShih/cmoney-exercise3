@@ -4,6 +4,9 @@
     @click="onCardClick"
     @keydown="onKeydown"
   >
+    <div class="card-header">
+      <slot name="card-header" />
+    </div>
     <div class="card-image">
       <div class="card-top-overlay">
         <slot name="card-top-overlay" />

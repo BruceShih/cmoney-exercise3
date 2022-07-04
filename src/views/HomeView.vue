@@ -9,7 +9,7 @@
       <BaseCard
         v-for="employee in employees"
         :key="employee.id"
-        @click="onCardClick(employee.location.coordinates)"
+        @click="onCardClick(employee)"
       >
         <template #card-top-overlay>
           <IconFemale v-if="employee.gender === 'female'" />
@@ -18,7 +18,7 @@
         <template #card-image>
           <img
             :src="employee.picture.large"
-            :alt="employee.name.title + ' ' + employee.name.first + ' ' + employee.name.last"
+            :alt="`${employee.name.title} ${employee.name.first} ${employee.name.last}`"
           >
         </template>
         <template #card-bottom-overlay>
@@ -40,21 +40,35 @@
       :show="showMap"
       @update:show="showMap = showMap ? !showMap : showMap"
     >
-      <GmapMap
-        :center="{lat:10, lng:10}"
-        :zoom="7"
-        map-type-id="terrain"
-        style="width: 500px; height: 300px"
-      >
-        <GmapMarker
-          v-for="(m, index) in location"
-          :key="index"
-          :position="m.position"
-          :clickable="true"
-          :draggable="false"
-          @click="center=m.position"
-        />
-      </GmapMap>
+      <template #modal-header>
+        <img
+          class="employee-avatar"
+          :src="selectedEmployee.avatar"
+          :alt="selectedEmployee.name"
+        >
+        <div class="w-100">
+          <span dir="auto">{{ selectedEmployee.name }}</span><br>
+          <span>{{ selectedEmployee.gender }}</span><br>
+          <span>{{ selectedEmployee.email }}</span><br>
+          <span>{{ selectedEmployee.phone }}</span><br>
+          <span>{{ selectedEmployee.age }}</span>
+        </div>
+      </template>
+      <template #modal-text>
+        <GmapMap
+          :center="{lat:10, lng:10}"
+          :zoom="7"
+          map-type-id="terrain"
+          style="width: 500px; height: 300px"
+        >
+          <GmapMarker
+            :position="selectedEmployee.location.position"
+            :clickable="true"
+            :draggable="false"
+            @click="center=selectedEmployee.location.position"
+          />
+        </GmapMap>
+      </template>
     </BaseModal>
   </div>
 </template>
@@ -79,7 +93,7 @@ const employees = ref([]);
 const currentPage = ref(1);
 const totalItems = ref(0);
 const totalPages = ref(0);
-const location = ref([]);
+const selectedEmployee = ref({});
 const showMap = ref(false);
 
 const getTotalEmployees = () => {
@@ -111,16 +125,23 @@ const getPagedEmployees = (page) => {
     }
   });
 };
-const onCardClick = (coordinates) => {
-  const { latitude, longitude } = coordinates;
-
-  location.value = [];
-  location.value.push({
-    position: {
-      lat: Number(latitude),
-      lng: Number(longitude),
+const onCardClick = (employee) => {
+  const emp = {
+    avatar: employee.picture.large,
+    name: `${employee.name.first} ${employee.name.last}`,
+    gender: employee.gender.charAt(0).toUpperCase() + employee.gender.slice(1),
+    email: employee.email,
+    phone: employee.cell,
+    age: employee.dob.age,
+    location: {
+      position: {
+        lat: employee.location.coordinates.latitude,
+        lng: employee.location.coordinates.longitude,
+      },
     },
-  });
+  };
+
+  selectedEmployee.value = emp;
 
   showMap.value = true;
 };
@@ -134,3 +155,10 @@ onMounted(() => {
   getPagedEmployees(1);
 });
 </script>
+
+<style lang="scss" scoped>
+.employee-avatar {
+  border-radius: 0.25rem;
+  margin-right: 1rem;
+}
+</style>

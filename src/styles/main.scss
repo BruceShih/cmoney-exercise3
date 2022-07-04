@@ -8,6 +8,7 @@
 @import 'modal';
 @import 'notification';
 @import 'paginator';
+@import 'table';
 @import 'utilities';
 @import 'wrapper';
 
@@ -29,6 +30,17 @@ body {
   font-weight: $body-font-weight;
   line-height: $body-line-height;
   background-color: $body-bg-color;
+}
+
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
 }
 
 #app,

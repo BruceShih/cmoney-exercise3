@@ -8,7 +8,12 @@
       ref="modalBody"
       class="modal-body"
     >
-      <slot />
+      <div class="modal-header">
+        <slot name="modal-header" />
+      </div>
+      <div class="model-text">
+        <slot name="modal-text" />
+      </div>
     </div>
   </div>
 </template>
@@ -43,8 +48,8 @@ onKeyStroke('Escape', () => {
   document.body.classList.remove('overflow-hidden');
 });
 
-watch(() => showModal, (value) => {
-  if (value) {
+watch(() => showModal, (newValue) => {
+  if (newValue.value) {
     document.body.classList.add('overflow-hidden');
   } else {
     document.body.classList.remove('overflow-hidden');

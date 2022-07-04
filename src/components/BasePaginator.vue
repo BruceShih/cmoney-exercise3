@@ -16,16 +16,20 @@
     >
       ...
     </BaseButton>
-    <BaseButton
-      v-for="n in 8"
-      :key="n"
-      :class="{ active: (n + start - 1) === current }"
-      variant="primary"
-      outline
-      @click="goToPage(n + start - 1)"
+    <template
+      v-for="n in (total >= 8 ? 8 : total)"
     >
-      {{ n + start - 1 }}
-    </BaseButton>
+      <BaseButton
+        v-if="start <= end"
+        :key="n"
+        :class="{ active: (n + start - 1) === current }"
+        variant="primary"
+        outline
+        @click="goToPage(n + start - 1)"
+      >
+        {{ n + start - 1 }}
+      </BaseButton>
+    </template>
     <BaseButton
       v-if="total - end > 0"
       variant="primary"
@@ -62,10 +66,14 @@ const props = defineProps({
 
 const emits = defineEmits(['change']);
 
-const current = ref(props.currentPage);
 const start = ref(1);
-const end = ref(8);
-const { totalPages: total } = toRefs(props);
+const end = ref(1);
+const { currentPage: current, totalPages: total } = toRefs(props);
+
+// watch(() => total, (newValue) => {
+//   if (newValue.value < 8) end.value = newValue.value;
+//   else end.value = 8;
+// });
 
 const updatePaginator = (page) => {
   start.value = page - 4;

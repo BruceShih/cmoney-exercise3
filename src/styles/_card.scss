@@ -8,6 +8,13 @@
   border: none;
   border-radius: $card-border-radius;
 
+  .card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
   .card-image {
     position: relative;
 

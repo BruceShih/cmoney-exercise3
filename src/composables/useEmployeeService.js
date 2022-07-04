@@ -29,14 +29,13 @@ export default function useEmployeeService() {
     );
   };
 
-  const getEmployeesByIdWithPaging = (id, page) => {
+  const getEmployeesById = (id) => {
     const instance = useBaseAxiosInstance();
 
     return useAxios(
       `/employees/${id}`,
       {
         method: 'GET',
-        params: { _page: page || 1, _limit: pageSize },
       },
       instance.value,
     );
@@ -50,8 +49,8 @@ export default function useEmployeeService() {
       {
         method: 'GET',
         params: {
-          gender: gender || null,
-          'location.country': country || null,
+          gender: gender === 'a' ? null : gender,
+          nat: country === 'All' ? null : country,
           _page: page || 1,
           _limit: pageSize,
         },
@@ -89,7 +88,7 @@ export default function useEmployeeService() {
     pageSize,
     getEmployees,
     getEmployeesWithPaging,
-    getEmployeesByIdWithPaging,
+    getEmployeesById,
     getEmployeesByCountryAndGenderWithPaging,
     updateEmployeeById,
     deleteEmployeeById,

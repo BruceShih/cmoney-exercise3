@@ -82,17 +82,20 @@ $header-padding-x: 1rem;
 $header-padding-y: 0.5rem;
 $header-height: $body-font-size * 3.75;
 $header-bg-color: #333;
-$header-color: $color-gray;
+$header-font-color: $color-gray;
 $header-hover-color: $color-white;
 $header-item-margin-x: 0.5rem;
 $header-item-margin-y: 0;
 
 // table
-// table strip: #F9F9F9
-// table selected: #FFF4D3
-$table-border-width: 1px;
+$table-font-color: $body-font-color;
+$table-bg-color: $body-bg-color;
+$table-border-width: $border-width;
 $table-border-style: solid;
 $table-border-color: #dee2e6;
+$table-striped-bg-color: #f9f9f9;
+$table-hover-bg-color: $color-gray;
+$table-active-bg-color: #fff4d3;
 
 // form
 $form-padding-x: 0.75rem;

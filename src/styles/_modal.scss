@@ -31,5 +31,12 @@
     background-color: $modal-bg-color;
     border-radius: $modal-border-radius;
     z-index: 50;
+
+    .modal-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
   }
 }
