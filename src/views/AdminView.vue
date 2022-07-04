@@ -24,11 +24,11 @@
             全部國家
           </option>
           <option
-            v-for="(country, index) in countries"
+            v-for="(c, index) in countries"
             :key="index"
-            :value="country.nat"
+            :value="c.nat"
           >
-            {{ country.country }}
+            {{ c.country }}
           </option>
         </select>
       </label>
@@ -104,7 +104,7 @@
             <BaseButton
               class="mr-2"
               variant="gray"
-              @click="openEditModal(employee.id)"
+              @click="openEditModal(employee)"
             >
               編輯
             </BaseButton>
@@ -123,45 +123,17 @@
       :total-pages="totalPages"
       @change="onPageChange"
     />
-    <BaseModal
+    <EditEmployeeModal
       :show="showEditModal"
-      @update:show="showEditModal = showEditModal ? !showEditModal : showEditModal"
-    >
-      <template #modal-header>
-        <span>新增會員資料</span>
-      </template>
-      <template #modal-text>
-        <div class="grid grid-column-3">
-          <div class="flex flex-column">
-            <img
-              :src="imagePreviewUrl"
-              alt="Preview"
-              width="110"
-              height="110"
-            >
-            <label for="EmployeePicture">
-              <input
-                id="EmployeePicture"
-                type="file"
-                name="EmployeePicture"
-                class="form-control-file"
-                accept="image/*"
-                @change="onPictureChange"
-              >
-            </label>
-          </div>
-          <div></div>
-          <div></div>
-        </div>
-      </template>
-    </BaseModal>
+      :employee="selectedEmployee"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import EditEmployeeModal from '@/components/admin/EditEmployeeModal.vue';
 import BaseButton from '@/components/BaseButton.vue';
-import BaseModal from '@/components/BaseModal.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
 
@@ -170,7 +142,6 @@ const {
   getEmployees,
   getEmployeesWithPaging,
   getEmployeesByCountryAndGenderWithPaging,
-  updateEmployeeById,
   deleteEmployeeById,
 } = useEmployeeService();
 
@@ -183,19 +154,7 @@ const totalItems = ref(0);
 const totalPages = ref(0);
 
 const showEditModal = ref(false);
-const imagePreviewUrl = ref('');
-const firstName = ref('');
-const lastName = ref('');
-const email = ref('');
-const gender = ref('');
-const country = ref('');
-const state = ref('');
-const city = ref('');
-const street = ref('');
-const phone = ref('');
-const latiture = ref('');
-const longitude = ref('');
-// const selectedEmployee = ref({});
+const selectedEmployee = ref({});
 
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
@@ -267,27 +226,9 @@ const onPageChange = (page) => {
     getPagedEmployees(page);
   }
 };
-const openEditModal = (id) => {
+const openEditModal = (employee) => {
   showEditModal.value = true;
-};
-const onPictureChange = (e) => {
-  const file = e.target.files[0];
-  imagePreviewUrl.value = URL.createObjectURL(file);
-};
-const onEdit = (id, data) => {
-  updateEmployeeById(id, data).then((res) => {
-    const { data, error } = res;
-
-    if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
-    } else {
-      totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
-      employees.value = data.value;
-
-      // notification.value.show('success', '登入成功');
-    }
-  });
+  selectedEmployee.value = employee;
 };
 const onDelete = (id) => {
   deleteEmployeeById(id).then((res) => {
@@ -311,4 +252,5 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

@@ -25,6 +25,7 @@
         v-if="isLoggedIn"
         variant="white"
         class="mr-2"
+        @click="openCreateModal"
       >
         +
       </BaseButton>
@@ -43,21 +44,28 @@
         登入
       </RouterLink>
     </div>
+    <CreateEmployeeModal
+      :show="showCreateModel"
+    />
   </header>
 </template>
 
 <script setup>
-import { computed, getCurrentInstance } from 'vue';
-import useAuthService from '../composables/useAuthService';
+import { ref, computed, getCurrentInstance } from 'vue';
 import BaseButton from './BaseButton.vue';
+import CreateEmployeeModal from './admin/CreateEmployeeModal.vue';
+import useAuthService from '../composables/useAuthService';
 import store from '../store';
 
 const vm = getCurrentInstance();
 const { logout } = useAuthService();
 
-// const isAdminPage = computed(() => vm.proxy.$route.path === '/admin');
+const showCreateModel = ref(false);
 const isLoggedIn = computed(() => store.getters['authStore/isAuthenticated']);
 
+const openCreateModal = () => {
+  showCreateModel.value = true;
+};
 const doLogout = () => {
   logout();
   vm.proxy.$router.push('/login');
