@@ -1,0 +1,35 @@
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 49;
+  }
+  
+  &.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-body {
+    display: block;
+    padding: 1rem;
+    background-color: $modal-bg-color;
+    border-radius: $modal-border-radius;
+    z-index: 50;
+  }
+}

@@ -67,8 +67,12 @@
   gap: 2rem;
 }
 
-.grid-8 {
+.grid-column-8 {
   grid-template-columns: repeat(8, 1fr);
+}
+
+.grid-row-2 {
+  grid-template-rows: 1fr 1fr 1fr;
 }
 
 .p-0 {
@@ -489,4 +493,8 @@
 
 .mb-6 {
   margin-bottom: 5rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }

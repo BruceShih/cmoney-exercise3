@@ -4,6 +4,8 @@
 @import 'card';
 @import 'form';
 @import 'header';
+@import 'icon';
+@import 'modal';
 @import 'notification';
 @import 'paginator';
 @import 'utilities';
@@ -23,11 +25,9 @@ html {
 body {
   margin: 0;
   width: 100%;
-  height: 100%;
   font-size: 1rem;
   font-weight: $body-font-weight;
   line-height: $body-line-height;
-  text-align: left;
   background-color: $body-bg-color;
 }
 

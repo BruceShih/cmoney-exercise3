@@ -1,0 +1,19 @@
+.paginator {
+  .btn {
+    &:first-of-type {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+
+    &:last-of-type {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &:not(&:first-of-type):not(&:last-of-type) {
+      border-radius: 0;
+      border-right: none;
+    }
+  }
+}
