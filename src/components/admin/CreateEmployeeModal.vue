@@ -205,14 +205,17 @@
           取消
         </BaseButton>
       </div>
+
+      <BaseNotification ref="notification" />
     </template>
   </BaseModal>
 </template>
 
 <script setup>
 import { ref, toRefs } from 'vue';
-import BaseModal from '../BaseModal.vue';
 import BaseButton from '../BaseButton.vue';
+import BaseModal from '../BaseModal.vue';
+import BaseNotification from '../BaseNotification.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
 
 const props = defineProps({
@@ -240,6 +243,8 @@ const phone = ref('');
 const latitude = ref('');
 const longitude = ref('');
 const imagePreviewUrl = ref('');
+
+const notification = ref(null);
 
 const onPictureChange = (e) => {
   const file = e.target.files[0];
@@ -275,10 +280,10 @@ const onCreate = () => {
     const { error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '建立失敗！');
     } else {
       emits('update:show', false);
-      // notification.value.show('success', '登入成功');
+      notification.value.show('success', '建立成功');
     }
   });
 };

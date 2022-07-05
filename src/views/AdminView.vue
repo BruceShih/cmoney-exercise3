@@ -128,13 +128,15 @@
       :employee="selectedEmployee"
       @update:show="showEditModal = showEditModal ? !showEditModal : showEditModal"
     />
+    <BaseNotification ref="notification" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import EditEmployeeModal from '@/components/admin/EditEmployeeModal.vue';
-import BaseButton from '@/components/BaseButton.vue';
+import EditEmployeeModal from '../components/admin/EditEmployeeModal.vue';
+import BaseButton from '../components/BaseButton.vue';
+import BaseNotification from '../components/BaseNotification.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
 import store from '../store';
@@ -158,12 +160,14 @@ const totalPages = ref(0);
 const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
+const notification = ref(null);
+
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '讀取資料失敗！');
     } else {
       const uniques = new Set();
       totalItems.value = data.value.length;
@@ -177,8 +181,6 @@ const getTotalEmployees = () => {
         nat: employee.nat,
         country: employee.location.country,
       }));
-
-      // notification.value.show('success', '登入成功');
     }
   });
 };
@@ -187,11 +189,9 @@ const getPagedEmployees = (page) => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '讀取資料失敗！');
     } else {
       employees.value = data.value;
-
-      // notification.value.show('success', '登入成功');
     }
   });
 };
@@ -204,13 +204,11 @@ const getPagedEmployeesWithFilter = () => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '讀取資料失敗！');
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
       employees.value = data.value;
-
-      // notification.value.show('success', '登入成功');
     }
   });
 };
@@ -240,13 +238,13 @@ const onDelete = (id) => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '刪除失敗！');
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
       employees.value = data.value;
 
-      // notification.value.show('success', '登入成功');
+      notification.value.show('success', '刪除成功');
     }
   });
 };

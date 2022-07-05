@@ -51,7 +51,7 @@
 
 <script setup>
 import { ref, toRefs } from 'vue';
-import BaseButton from '@/components/BaseButton.vue';
+import BaseButton from './BaseButton.vue';
 
 const props = defineProps({
   currentPage: {

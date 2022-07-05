@@ -59,7 +59,7 @@
 <script setup>
 import { ref, getCurrentInstance } from 'vue';
 import { useCookies } from '@vueuse/integrations/useCookies';
-import BaseNotification from '@/components/BaseNotification.vue';
+import BaseNotification from '../components/BaseNotification.vue';
 import useAuthService from '../composables/useAuthService';
 import store from '../store';
 

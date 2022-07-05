@@ -38,23 +38,31 @@
     />
     <BaseModal
       :show="showMap"
+      no-header
       @update:show="showMap = showMap ? !showMap : showMap"
     >
-      <template #modal-header>
-        <img
-          class="employee-avatar"
-          :src="selectedEmployee.avatar"
-          :alt="selectedEmployee.name"
-        >
-        <div class="w-100">
-          <span dir="auto">{{ selectedEmployee.name }}</span><br>
-          <span>{{ selectedEmployee.gender }}</span><br>
-          <span>{{ selectedEmployee.email }}</span><br>
-          <span>{{ selectedEmployee.phone }}</span><br>
-          <span>{{ selectedEmployee.age }}</span>
-        </div>
-      </template>
       <template #modal-text>
+        <div
+          class="flex flex-row justify-start items-start mb-3"
+        >
+          <img
+            class="employee-avatar"
+            :src="selectedEmployee.avatar"
+            :alt="selectedEmployee.name"
+          >
+          <div class="w-100">
+            <span
+              class="inline-block w-100"
+              dir="auto"
+            >
+              {{ selectedEmployee.name }}
+            </span><br>
+            <span>Gender: {{ selectedEmployee.gender }}</span><br>
+            <span>Email: {{ selectedEmployee.email }}</span><br>
+            <span>Phone: {{ selectedEmployee.phone }}</span><br>
+            <span>Age: {{ selectedEmployee.age }}</span>
+          </div>
+        </div>
         <GmapMap
           :center="{lat:10, lng:10}"
           :zoom="7"
@@ -70,15 +78,17 @@
         </GmapMap>
       </template>
     </BaseModal>
+    <BaseNotification ref="notification" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import IconFemale from '@/components/icons/IconFemale.vue';
-import IconMale from '@/components/icons/IconMale.vue';
-import BaseCard from '@/components/BaseCard.vue';
-import BaseModal from '@/components/BaseModal.vue';
+import IconFemale from '../components/icons/IconFemale.vue';
+import IconMale from '../components/icons/IconMale.vue';
+import BaseCard from '../components/BaseCard.vue';
+import BaseModal from '../components/BaseModal.vue';
+import BaseNotification from '../components/BaseNotification.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
 
@@ -88,7 +98,6 @@ const {
   getEmployeesWithPaging,
 } = useEmployeeService();
 
-// const countries = ref([]);
 const employees = ref([]);
 const currentPage = ref(1);
 const totalItems = ref(0);
@@ -96,19 +105,17 @@ const totalPages = ref(0);
 const selectedEmployee = ref({});
 const showMap = ref(false);
 
+const notification = ref(null);
+
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '讀取資料失敗！');
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
-      // countries.value = [...new Set(data.value
-      //   .map((item) => item.location).map((item) => item.country))];
-
-      // notification.value.show('success', '登入成功');
     }
   });
 };
@@ -117,11 +124,9 @@ const getPagedEmployees = (page) => {
     const { data, error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '讀取資料失敗！');
     } else {
       employees.value = data.value;
-
-      // notification.value.show('success', '登入成功');
     }
   });
 };
@@ -140,7 +145,6 @@ const onCardClick = (employee) => {
   };
 
   selectedEmployee.value = emp;
-
   showMap.value = true;
 };
 const onPageChange = (page) => {

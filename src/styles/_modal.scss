@@ -36,15 +36,20 @@
       justify-content: flex-start;
       align-items: flex-start;
       padding: 0.5rem 1rem;
-      border-top-left-radius: $modal-border-radius;
-      border-top-right-radius: $modal-border-radius;
+      border-radius: $modal-border-radius;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+      + .model-text {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
     }
 
     .model-text {
       padding: 1rem;
       background-color: $modal-bg-color;
-      border-bottom-left-radius: $modal-border-radius;
-      border-bottom-right-radius: $modal-border-radius;
+      border-radius: $modal-border-radius;
     }
   }
 }

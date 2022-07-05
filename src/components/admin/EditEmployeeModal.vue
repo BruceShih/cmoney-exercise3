@@ -205,6 +205,8 @@
           取消
         </BaseButton>
       </div>
+
+      <BaseNotification ref="notification" />
     </template>
   </BaseModal>
 </template>
@@ -213,6 +215,7 @@
 import { ref, toRefs, watch } from 'vue';
 import BaseModal from '../BaseModal.vue';
 import BaseButton from '../BaseButton.vue';
+import BaseNotification from '../BaseNotification.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
 
 const props = defineProps({
@@ -245,6 +248,8 @@ const phone = ref('');
 const latitude = ref('');
 const longitude = ref('');
 const imagePreviewUrl = ref('');
+
+const notification = ref(null);
 
 watch(() => employee, (newValue) => {
   picture.value = newValue.value.picture.large;
@@ -296,10 +301,10 @@ const onEdit = () => {
     const { error } = res;
 
     if (error.value) {
-      // notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+      notification.value.show('danger', '更新失敗！');
     } else {
       emits('update:show', false);
-      // notification.value.show('success', '登入成功');
+      notification.value.show('success', '更新成功');
     }
   });
 };

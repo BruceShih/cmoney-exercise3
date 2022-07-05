@@ -9,6 +9,7 @@
       class="modal-body"
     >
       <div
+        v-if="!noHeader"
         class="modal-header"
         :class="[headerTextClass, headerBgClass]"
       >
@@ -34,6 +35,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  noHeader: {
+    type: Boolean,
+    default: false,
+  },
   headerTextClass: {
     type: String,
     default: 'text-black',
@@ -48,7 +53,9 @@ const emits = defineEmits(['update:show']);
 
 const modal = ref(null);
 const modalBody = ref(null);
-const { show: showModal, headerTextClass, headerBgClass } = toRefs(props);
+const {
+  show: showModal, noHeader, headerTextClass, headerBgClass,
+} = toRefs(props);
 
 onClickOutside(modalBody, () => {
   emits('update:show', false);
