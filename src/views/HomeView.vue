@@ -78,20 +78,20 @@
         </GmapMap>
       </template>
     </BaseModal>
-    <BaseNotification ref="notification" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useEventBus } from '@vueuse/core';
 import IconFemale from '../components/icons/IconFemale.vue';
 import IconMale from '../components/icons/IconMale.vue';
 import BaseCard from '../components/BaseCard.vue';
 import BaseModal from '../components/BaseModal.vue';
-import BaseNotification from '../components/BaseNotification.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
 
+const { emit } = useEventBus('notification-show');
 const {
   pageSize,
   getEmployees,
@@ -105,14 +105,12 @@ const totalPages = ref(0);
 const selectedEmployee = ref({});
 const showMap = ref(false);
 
-const notification = ref(null);
-
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '讀取資料失敗！');
+      emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
@@ -124,7 +122,7 @@ const getPagedEmployees = (page) => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '讀取資料失敗！');
+      emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       employees.value = data.value;
     }

@@ -205,18 +205,18 @@
           取消
         </BaseButton>
       </div>
-
-      <BaseNotification ref="notification" />
     </template>
   </BaseModal>
 </template>
 
 <script setup>
 import { ref, toRefs } from 'vue';
+import { useEventBus } from '@vueuse/core';
 import BaseButton from '../BaseButton.vue';
 import BaseModal from '../BaseModal.vue';
-import BaseNotification from '../BaseNotification.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
+
+const { emit } = useEventBus('notification-show');
 
 const props = defineProps({
   show: {
@@ -230,7 +230,6 @@ const emits = defineEmits(['update:show']);
 const { createEmployee } = useEmployeeService();
 
 const { show: showModal } = toRefs(props);
-
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
@@ -243,8 +242,6 @@ const phone = ref('');
 const latitude = ref('');
 const longitude = ref('');
 const imagePreviewUrl = ref('');
-
-const notification = ref(null);
 
 const onPictureChange = (e) => {
   const file = e.target.files[0];
@@ -280,10 +277,10 @@ const onCreate = () => {
     const { error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '建立失敗！');
+      emit({ type: 'danger', text: '建立失敗！' });
     } else {
       emits('update:show', false);
-      notification.value.show('success', '建立成功');
+      emit({ type: 'success', text: '建立成功' });
     }
   });
 };

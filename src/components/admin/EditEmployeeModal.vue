@@ -205,18 +205,18 @@
           取消
         </BaseButton>
       </div>
-
-      <BaseNotification ref="notification" />
     </template>
   </BaseModal>
 </template>
 
 <script setup>
 import { ref, toRefs, watch } from 'vue';
+import { useEventBus } from '@vueuse/core';
 import BaseModal from '../BaseModal.vue';
 import BaseButton from '../BaseButton.vue';
-import BaseNotification from '../BaseNotification.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
+
+const { emit } = useEventBus('notification-show');
 
 const props = defineProps({
   show: {
@@ -234,7 +234,6 @@ const emits = defineEmits(['update:show']);
 const { updateEmployeeById } = useEmployeeService();
 
 const { show: showModal, employee } = toRefs(props);
-
 const picture = ref('');
 const firstName = ref('');
 const lastName = ref('');
@@ -248,8 +247,6 @@ const phone = ref('');
 const latitude = ref('');
 const longitude = ref('');
 const imagePreviewUrl = ref('');
-
-const notification = ref(null);
 
 watch(() => employee, (newValue) => {
   picture.value = newValue.value.picture.large;
@@ -301,10 +298,10 @@ const onEdit = () => {
     const { error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '更新失敗！');
+      emit({ type: 'danger', text: '更新失敗！' });
     } else {
       emits('update:show', false);
-      notification.value.show('success', '更新成功');
+      emit({ type: 'success', text: '更新成功' });
     }
   });
 };

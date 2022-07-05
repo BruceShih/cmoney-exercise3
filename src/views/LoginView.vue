@@ -50,8 +50,6 @@
           >
         </div>
       </fieldset>
-
-      <BaseNotification ref="notification" />
     </form>
   </div>
 </template>
@@ -59,17 +57,17 @@
 <script setup>
 import { ref, getCurrentInstance } from 'vue';
 import { useCookies } from '@vueuse/integrations/useCookies';
-import BaseNotification from '../components/BaseNotification.vue';
+import { useEventBus } from '@vueuse/core';
 import useAuthService from '../composables/useAuthService';
 import store from '../store';
 
 const vm = getCurrentInstance();
+const { emit: onShowEmit } = useEventBus('notification-show');
+const { emit: onHideEmit } = useEventBus('notification-hide');
 const { login } = useAuthService();
 
 const email = ref('');
 const password = ref('');
-
-const notification = ref(null);
 
 const submit = () => {
   if (!email.value && !password.value) {
@@ -82,15 +80,17 @@ const submit = () => {
       const { set } = useCookies(['stegosaurus']);
 
       if (error.value) {
-        notification.value.show('danger', '帳號或密碼有誤，請重新輸入！');
+        onShowEmit({ type: 'danger', text: '帳號或密碼有誤，請重新輸入！' });
       } else {
         set('stegosaurus', JSON.stringify(data.value), {
           expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         });
         store.commit('authStore/setUser', data.value);
-        notification.value.show('success', '登入成功').then(() => {
+        onShowEmit({ type: 'success', text: '登入成功' });
+        setTimeout(() => {
+          onHideEmit();
           vm.proxy.$router.push('/');
-        });
+        }, 1500);
       }
     },
   );

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import * as VueGoogleMaps from 'vue2-google-maps';
 import App from './App.vue';
-import BaseLoader from './components/BaseLoader';
 import router from './router';
 import store from './store';
 
@@ -12,10 +11,7 @@ Vue.use(VueGoogleMaps, {
   },
 });
 
-Vue.component('BaseLoader', BaseLoader);
-
 Vue.config.productionTip = false;
-Vue.$loader = BaseLoader.methods;
 
 new Vue({
   router,

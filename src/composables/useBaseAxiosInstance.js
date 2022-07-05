@@ -1,24 +1,24 @@
-import { ref, getCurrentInstance } from 'vue';
+import { ref } from 'vue';
+import { useEventBus } from '@vueuse/core';
 import axios from 'axios';
 
 export default function useBaseAxiosInstance() {
-  const vm = getCurrentInstance();
+  const { emit } = useEventBus('loader');
   const instance = axios.create({
     baseURL: 'http://localhost:3000',
     headers: { 'Content-Type': 'application/json' },
   });
-  const loader = vm.proxy.$loader;
 
   instance.interceptors.request.use((config) => {
-    loader.show();
+    emit(true);
     return config;
   }, (error) => Promise.reject(error));
 
   instance.interceptors.response.use((response) => {
-    loader.hide();
+    emit(false);
     return response;
   }, (error) => {
-    loader.hide();
+    emit(false);
     return Promise.reject(error);
   });
 

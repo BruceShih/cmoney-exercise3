@@ -9,25 +9,23 @@
 
 <script setup>
 import { ref } from 'vue';
-import useExpose from '../composables/useExpose';
+import { useEventBus } from '@vueuse/core';
 
-// reactivities
+const { on: onShow } = useEventBus('notification-show');
+const { on: onHide } = useEventBus('notification-hide');
 const message = ref('');
 const classList = ref([]);
 
-const show = (type, text) => new Promise((resolve) => {
+onShow(({ type, text }) => {
   classList.value = [];
   classList.value.push('show');
   if (['danger', 'success'].includes(type)) {
     classList.value.push(`bg-${type}`);
   }
   message.value = text;
-
-  setTimeout(() => {
-    classList.value.splice(classList.value.indexOf('show'), 1);
-    resolve();
-  }, 1500);
 });
 
-useExpose({ show });
+onHide(() => {
+  classList.value.splice(classList.value.indexOf('show'), 1);
+});
 </script>

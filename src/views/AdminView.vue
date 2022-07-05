@@ -128,19 +128,19 @@
       :employee="selectedEmployee"
       @update:show="showEditModal = showEditModal ? !showEditModal : showEditModal"
     />
-    <BaseNotification ref="notification" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useEventBus } from '@vueuse/core';
 import EditEmployeeModal from '../components/admin/EditEmployeeModal.vue';
 import BaseButton from '../components/BaseButton.vue';
-import BaseNotification from '../components/BaseNotification.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
 import store from '../store';
 
+const { emit } = useEventBus('notification-show');
 const {
   pageSize,
   getEmployees,
@@ -160,14 +160,12 @@ const totalPages = ref(0);
 const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
-const notification = ref(null);
-
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '讀取資料失敗！');
+      emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       const uniques = new Set();
       totalItems.value = data.value.length;
@@ -189,7 +187,7 @@ const getPagedEmployees = (page) => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '讀取資料失敗！');
+      emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       employees.value = data.value;
     }
@@ -204,7 +202,7 @@ const getPagedEmployeesWithFilter = () => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '讀取資料失敗！');
+      emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
@@ -238,13 +236,13 @@ const onDelete = (id) => {
     const { data, error } = res;
 
     if (error.value) {
-      notification.value.show('danger', '刪除失敗！');
+      emit({ type: 'danger', text: '刪除失敗！' });
     } else {
       totalItems.value = data.value.length;
       totalPages.value = Math.ceil(totalItems.value / pageSize);
       employees.value = data.value;
 
-      notification.value.show('success', '刪除成功');
+      emit({ type: 'success', text: '刪除成功' });
     }
   });
 };

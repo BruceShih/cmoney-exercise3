@@ -7,7 +7,7 @@
   left: 0;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.2);
-  stroke: white;
+  stroke: black;
 
   &.show {
     display: flex;
@@ -25,5 +25,14 @@
     stroke-dasharray: 150;
     stroke-dashoffset: 150;
     animation: load 2.3s infinite;
+  }
+}
+
+@keyframes load {
+  50% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -150;
   }
 }
