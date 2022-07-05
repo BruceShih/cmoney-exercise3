@@ -5,7 +5,7 @@ import store from '../store';
 
 export default function useAuthService() {
   const login = (email, password) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/signin',

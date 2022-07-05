@@ -1,25 +1,27 @@
 <template>
-  <div
-    ref="modal"
-    class="modal"
-    :class="{ show: showModal }"
-  >
+  <transition name="fade">
     <div
-      ref="modalBody"
-      class="modal-body"
+      ref="modal"
+      class="modal"
+      :class="{ show: showModal }"
     >
       <div
-        v-if="!noHeader"
-        class="modal-header"
-        :class="[headerTextClass, headerBgClass]"
+        ref="modalBody"
+        class="modal-body"
       >
-        <slot name="modal-header" />
-      </div>
-      <div class="model-text">
-        <slot name="modal-text" />
+        <div
+          v-if="!noHeader"
+          class="modal-header"
+          :class="[headerTextClass, headerBgClass]"
+        >
+          <slot name="modal-header" />
+        </div>
+        <div class="model-text">
+          <slot name="modal-text" />
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
@@ -74,3 +76,13 @@ watch(() => showModal, (newValue) => {
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>

@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import * as VueGoogleMaps from 'vue2-google-maps';
+import Loading from 'vue-loading-overlay';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 Vue.use(VueGoogleMaps, {
   load: {
@@ -10,6 +13,7 @@ Vue.use(VueGoogleMaps, {
     libraries: 'places',
   },
 });
+Vue.use(Loading);
 
 Vue.config.productionTip = false;
 

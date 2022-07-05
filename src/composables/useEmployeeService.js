@@ -5,7 +5,7 @@ export default function useEmployeeService() {
   const pageSize = 10;
 
   const getEmployees = () => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/employees',
@@ -17,7 +17,7 @@ export default function useEmployeeService() {
   };
 
   const getEmployeesWithPaging = (page) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/employees',
@@ -30,7 +30,7 @@ export default function useEmployeeService() {
   };
 
   const getEmployeesById = (id) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       `/employees/${id}`,
@@ -42,7 +42,7 @@ export default function useEmployeeService() {
   };
 
   const getEmployeesByIdsCountryAndGenderWithPaging = (ids, page, country, gender) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
     // regex to match a list of ids one by one using lookahead, lookbehinds and non-capturing groups
     // given list: 1, 2, 3, 4
     // regex will be: (?:^|(?<= ))(1|2|3|4)})(?:(?= )|$)
@@ -65,7 +65,7 @@ export default function useEmployeeService() {
   };
 
   const getEmployeesByCountryAndGenderWithPaging = (country, gender, page) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/employees',
@@ -83,7 +83,7 @@ export default function useEmployeeService() {
   };
 
   const createEmployee = (employee) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/employees',
@@ -96,7 +96,7 @@ export default function useEmployeeService() {
   };
 
   const updateEmployeeById = (id, employee) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       `/employees/${id}`,
@@ -109,7 +109,7 @@ export default function useEmployeeService() {
   };
 
   const deleteEmployeeById = (id) => {
-    const instance = useBaseAxiosInstance();
+    const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       `/employees/${id}`,
