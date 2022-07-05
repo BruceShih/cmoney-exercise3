@@ -55,3 +55,21 @@ select.form-control {
   display: block;
   width: 100%;
 }
+
+.form-radio-group {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+  padding: $form-padding-y 0;
+  font-size: $form-font-size;
+  font-weight: $form-font-weight;
+  line-height: $form-line-height;
+}
+
+.form-label {
+  display: inline-block;
+  padding-top: $form-padding-y;
+  padding-bottom: $form-padding-y;
+  font-size: $form-label-font-size;
+  line-height: $form-line-height;
+}

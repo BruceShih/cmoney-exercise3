@@ -1,7 +1,10 @@
 <template>
   <BaseModal
+    class="edit-modal"
     :show="showModal"
-    @update:show="showModal = showModal ? !showModal : showModal"
+    header-text-class="text-white"
+    header-bg-class="bg-gray"
+    @update:show="onCancel"
   >
     <template #modal-header>
       <span>編輯會員資料</span>
@@ -9,7 +12,7 @@
     <template #modal-text>
       <div class="grid grid-column-3 edit-employee-grid">
         <div class="left">
-          <div class="flex flex-column">
+          <div class="flex flex-col">
             <img
               :src="imagePreviewUrl || picture"
               alt="Preview"
@@ -30,7 +33,7 @@
         </div>
         <div>
           <label for="FirstName">
-            First Name
+            <span class="form-label">First Name</span>
             <input
               id="FirstName"
               v-model="firstName"
@@ -41,7 +44,7 @@
         </div>
         <div>
           <label for="LastName">
-            Last Name
+            <span class="form-label">Last Name</span>
             <input
               id="LastName"
               v-model="lastName"
@@ -52,7 +55,7 @@
         </div>
         <div class="wide">
           <label for="Birth">
-            Birth
+            <span class="form-label">Birth</span>
             <input
               id="Birth"
               class="form-control"
@@ -62,7 +65,7 @@
         </div>
         <div>
           <label for="Email">
-            Email
+            <span class="form-label">Email</span>
             <input
               id="Email"
               v-model="email"
@@ -73,8 +76,8 @@
         </div>
         <div>
           <label for="Gender">
-            Gender
-            <div>
+            <span class="form-label">Gender</span>
+            <div class="flex justify-start items-center form-radio-group">
               <label for="GenderMale">
                 <input
                   id="GenderMale"
@@ -89,6 +92,7 @@
                 <input
                   id="GenderFemale"
                   v-model="gender"
+                  class="ml-3"
                   type="radio"
                   name="gender-female"
                   value="female"
@@ -100,7 +104,7 @@
         </div>
         <div>
           <label for="Country">
-            Country
+            <span class="form-label">Country</span>
             <input
               id="Country"
               v-model="country"
@@ -111,7 +115,7 @@
         </div>
         <div>
           <label for="State">
-            State
+            <span class="form-label">State</span>
             <input
               id="State"
               v-model="state"
@@ -122,7 +126,7 @@
         </div>
         <div>
           <label for="City">
-            City
+            <span class="form-label">City</span>
             <input
               id="City"
               v-model="city"
@@ -133,7 +137,7 @@
         </div>
         <div>
           <label for="Street">
-            Street
+            <span class="form-label">Street</span>
             <input
               id="Street"
               v-model="street"
@@ -144,7 +148,7 @@
         </div>
         <div>
           <label for="Phone">
-            Number
+            <span class="form-label">Number</span>
             <input
               id="Phone"
               v-model="phone"
@@ -154,39 +158,48 @@
           </label>
         </div>
         <div />
-        <div>
-          <label for="Latitude">
-            Coordinates
-            <input
-              id="Latitude"
-              v-model="latitude"
-              class="form-control"
-              type="text"
+        <div class="wide2">
+          <div class="flex w-100">
+            <span class="form-label">Coordinates</span>
+          </div>
+          <div class="flex w-100">
+            <label
+              class="flex-grow mr-2"
+              for="Latitude"
             >
-          </label>
-        </div>
-        <div>
-          <label for="Longitude">
-            <input
-              id="Longitude"
-              v-model="longitude"
-              class="form-control"
-              type="text"
+              <input
+                id="Latitude"
+                v-model="latitude"
+                class="form-control"
+                type="text"
+              >
+            </label>
+            <label
+              class="flex-grow ml-2"
+              for="Longitude"
             >
-          </label>
+              <input
+                id="Longitude"
+                v-model="longitude"
+                class="form-control"
+                type="text"
+              >
+            </label>
+          </div>
         </div>
       </div>
       <div
-        class="flex justify-center items-center"
+        class="flex justify-center items-center mt-4"
       >
         <BaseButton
+          class="mr-2"
           variant="primary"
           @click="onEdit"
         >
           確定
         </BaseButton>
         <BaseButton
-          variant="gary"
+          variant="gray"
           @click="onCancel"
         >
           取消
@@ -242,7 +255,7 @@ watch(() => employee, (newValue) => {
   country.value = newValue.value.location.country;
   state.value = newValue.value.location.state;
   city.value = newValue.value.location.city;
-  street.value = newValue.value.street.name;
+  street.value = newValue.value.location.street.name;
   phone.value = newValue.value.cell;
   latitude.value = newValue.value.location.coordinates.latitude;
   longitude.value = newValue.value.location.coordinates.longitude;
@@ -274,7 +287,7 @@ const onEdit = () => {
       },
     },
     street: {
-      name: employee.value.street.name,
+      name: employee.value.location.street.name,
     },
     cell: employee.value.cell,
   };
@@ -297,6 +310,7 @@ const onCancel = () => {
 
 <style lang="scss" scoped>
 .edit-employee-grid {
+  max-width: 45rem;
   grid-template-areas:
     "left . ."
     "left wide wide"
@@ -304,10 +318,14 @@ const onCancel = () => {
     "left . ."
     "left . ."
     "left . ."
-    "left . .";
+    "left wide2 wide2";
 
   .wide {
     grid-area: wide;
+  }
+
+  .wide2 {
+    grid-area: wide2;
   }
 
   .left {

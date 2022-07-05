@@ -62,10 +62,10 @@
           style="width: 500px; height: 300px"
         >
           <GmapMarker
-            :position="selectedEmployee.location.position"
+            :position="selectedEmployee.location"
             :clickable="true"
             :draggable="false"
-            @click="center=selectedEmployee.location.position"
+            @click="center=selectedEmployee.location"
           />
         </GmapMap>
       </template>
@@ -134,10 +134,8 @@ const onCardClick = (employee) => {
     phone: employee.cell,
     age: employee.dob.age,
     location: {
-      position: {
-        lat: employee.location.coordinates.latitude,
-        lng: employee.location.coordinates.longitude,
-      },
+      lat: Number(employee.location.coordinates.latitude),
+      lng: Number(employee.location.coordinates.longitude),
     },
   };
 

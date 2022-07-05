@@ -41,6 +41,29 @@ export default function useEmployeeService() {
     );
   };
 
+  const getEmployeesByIdsCountryAndGenderWithPaging = (ids, page, country, gender) => {
+    const instance = useBaseAxiosInstance();
+    // regex to match a list of ids one by one using lookahead, lookbehinds and non-capturing groups
+    // given list: 1, 2, 3, 4
+    // regex will be: (?:^|(?<= ))(1|2|3|4)})(?:(?= )|$)
+    // will match records where id = 1 or 2 or 3 or 4
+    const searchString = `(?:^|(?<= ))(${ids.join('|')})(?:(?= )|$)`;
+
+    return useAxios(
+      `/employees?id_like=${searchString}`,
+      {
+        method: 'GET',
+        params: {
+          gender: gender === 'a' ? null : gender,
+          nat: country === 'All' ? null : country,
+          _page: page || 1,
+          _limit: pageSize,
+        },
+      },
+      instance.value,
+    );
+  };
+
   const getEmployeesByCountryAndGenderWithPaging = (country, gender, page) => {
     const instance = useBaseAxiosInstance();
 
@@ -102,6 +125,7 @@ export default function useEmployeeService() {
     getEmployees,
     getEmployeesWithPaging,
     getEmployeesById,
+    getEmployeesByIdsCountryAndGenderWithPaging,
     getEmployeesByCountryAndGenderWithPaging,
     createEmployee,
     updateEmployeeById,

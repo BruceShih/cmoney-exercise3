@@ -46,6 +46,7 @@
     </div>
     <CreateEmployeeModal
       :show="showCreateModel"
+      @update:show="showCreateModel = showCreateModel ? !showCreateModel : showCreateModel"
     />
   </header>
 </template>

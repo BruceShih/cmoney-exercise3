@@ -8,7 +8,10 @@
       ref="modalBody"
       class="modal-body"
     >
-      <div class="modal-header">
+      <div
+        class="modal-header"
+        :class="[headerTextClass, headerBgClass]"
+      >
         <slot name="modal-header" />
       </div>
       <div class="model-text">
@@ -31,13 +34,21 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  headerTextClass: {
+    type: String,
+    default: 'text-black',
+  },
+  headerBgClass: {
+    type: String,
+    default: 'bg-white',
+  },
 });
 
 const emits = defineEmits(['update:show']);
 
 const modal = ref(null);
 const modalBody = ref(null);
-const { show: showModal } = toRefs(props);
+const { show: showModal, headerTextClass, headerBgClass } = toRefs(props);
 
 onClickOutside(modalBody, () => {
   emits('update:show', false);

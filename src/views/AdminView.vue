@@ -76,13 +76,13 @@
           v-for="employee in employees"
           :key="employee.id"
         >
-          <td>
+          <td class="text-center">
             <label :for="`Employee${employee.id}`">
               <input
                 :id="`Employee${employee.id}`"
                 :name="`Employee${employee.id}`"
                 type="checkbox"
-                value=""
+                @change="onCheckboxChange(employee.id)"
               >
             </label>
           </td>
@@ -126,6 +126,7 @@
     <EditEmployeeModal
       :show="showEditModal"
       :employee="selectedEmployee"
+      @update:show="showEditModal = showEditModal ? !showEditModal : showEditModal"
     />
   </div>
 </template>
@@ -136,6 +137,7 @@ import EditEmployeeModal from '@/components/admin/EditEmployeeModal.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import BasePaginator from '../components/BasePaginator.vue';
 import useEmployeeService from '../composables/useEmployeeService';
+import store from '../store';
 
 const {
   pageSize,
@@ -225,6 +227,9 @@ const onPageChange = (page) => {
   } else {
     getPagedEmployees(page);
   }
+};
+const onCheckboxChange = (id) => {
+  store.commit('employeeStore/add', id);
 };
 const openEditModal = (employee) => {
   showEditModal.value = true;

@@ -7,13 +7,17 @@ Vue.use(VueRouter);
 
 const authGuard = (to, from, next) => {
   const { get } = useCookies(['stegosaurus']);
+  console.log(store.getters['authStore/isAuthenticated']);
   if (get('stegosaurus')) {
     const data = get('stegosaurus');
     store.commit('authStore/setUser', data);
-  }
 
-  if (store.getters['authStore/isAuthenticated'] === true) next();
-  else next('/login');
+    if (store.getters['authStore/isAuthenticated'] === true) next();
+    else next('/login');
+  } else {
+    store.commit('authStore/clearUser');
+    next('/login');
+  }
 };
 
 const routes = [
