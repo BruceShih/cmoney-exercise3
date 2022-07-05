@@ -7,24 +7,18 @@ export default function useBaseAxiosInstance() {
     baseURL: 'http://localhost:3000',
     headers: { 'Content-Type': 'application/json' },
   });
-  const loader = ref(null);
-  const hideLoader = () => {
-    if (loader.value) {
-      loader.value.hide();
-      loader.value = null;
-    }
-  };
+  const loader = vm.proxy.$loader;
 
   instance.interceptors.request.use((config) => {
-    loader.value = vm.proxy.$loading.show();
+    loader.show();
     return config;
   }, (error) => Promise.reject(error));
 
   instance.interceptors.response.use((response) => {
-    hideLoader();
+    loader.hide();
     return response;
   }, (error) => {
-    hideLoader();
+    loader.hide();
     return Promise.reject(error);
   });
 
