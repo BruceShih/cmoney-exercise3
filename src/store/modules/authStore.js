@@ -12,6 +12,9 @@ const authStore = {
     isAuthenticated(state) {
       return state.isAuthenticated;
     },
+    getUser(state) {
+      return state.user;
+    },
   },
   mutations: {
     setUser(state, user) {

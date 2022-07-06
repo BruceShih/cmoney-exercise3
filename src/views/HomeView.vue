@@ -31,11 +31,13 @@
         </template>
       </BaseCard>
     </div>
-    <BasePaginator
-      :current-page="currentPage"
-      :total-pages="totalPages"
-      @change="onPageChange"
-    />
+    <div class="flex justify-center items-center">
+      <BasePaginator
+        :current-page="currentPage"
+        :total-pages="totalPages"
+        @change="onPageChange"
+      />
+    </div>
     <BaseModal
       :show="showMap"
       no-header

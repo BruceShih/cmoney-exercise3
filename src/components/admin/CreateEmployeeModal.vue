@@ -217,6 +217,7 @@ import BaseModal from '../BaseModal.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
 
 const { emit } = useEventBus('notification-show');
+const { createEmployee } = useEmployeeService();
 
 const props = defineProps({
   show: {
@@ -227,9 +228,60 @@ const props = defineProps({
 
 const emits = defineEmits(['update:show']);
 
-const { createEmployee } = useEmployeeService();
-
 const { show: showModal } = toRefs(props);
+const newEmployee = ref({
+  id: 0,
+  gender: '',
+  name: {
+    title: '',
+    first: '',
+    last: '',
+  },
+  location: {
+    street: {
+      number: 0,
+      name: '',
+    },
+    city: '',
+    state: '',
+    country: '',
+    postcode: '',
+    coordinates: {
+      latitude: '',
+      longitude: '',
+    },
+    timezone: {
+      offset: '',
+      description: '',
+    },
+  },
+  email: '',
+  login: {
+    uuid: '',
+    username: '',
+    password: '',
+    salt: '',
+    md5: '',
+    sha1: '',
+    sha256: '',
+  },
+  dob: {
+    date: '',
+    age: 0,
+  },
+  registered: {
+    date: '',
+    age: 0,
+  },
+  phone: '',
+  cell: '',
+  picture: {
+    large: '',
+    medium: '',
+    thumbnail: '',
+  },
+  nat: '',
+});
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
@@ -248,32 +300,20 @@ const onPictureChange = (e) => {
   imagePreviewUrl.value = URL.createObjectURL(file);
 };
 const onCreate = () => {
-  const data = {
-    picture: {
-      large: imagePreviewUrl.value,
-    },
-    name: {
-      first: firstName.value,
-      last: lastName.value,
-    },
-    email: email.value,
-    gender: gender.value,
-    location: {
-      country: country.value,
-      state: state.value,
-      city: city.value,
-      coordinates: {
-        latitude: latitude.value,
-        longitude: longitude.value,
-      },
-    },
-    street: {
-      name: street.value,
-    },
-    cell: phone.value,
-  };
+  newEmployee.value.picture.large = imagePreviewUrl.value;
+  newEmployee.value.name.first = firstName.value;
+  newEmployee.value.name.last = lastName.value;
+  newEmployee.value.email = email.value;
+  newEmployee.value.gender = gender.value;
+  newEmployee.value.location.country = country.value;
+  newEmployee.value.location.state = state.value;
+  newEmployee.value.location.city = city.value;
+  newEmployee.value.location.coordinates.latitude = latitude.value;
+  newEmployee.value.location.coordinates.longitude = longitude.value;
+  newEmployee.value.location.street.name = street.value;
+  newEmployee.value.cell = phone.value;
 
-  createEmployee(data).then((res) => {
+  createEmployee(newEmployee.value).then((res) => {
     const { error } = res;
 
     if (error.value) {
@@ -285,6 +325,18 @@ const onCreate = () => {
   });
 };
 const onCancel = () => {
+  firstName.value = '';
+  lastName.value = '';
+  email.value = '';
+  gender.value = '';
+  country.value = '';
+  state.value = '';
+  city.value = '';
+  street.value = '';
+  phone.value = '';
+  latitude.value = '';
+  longitude.value = '';
+  imagePreviewUrl.value = '';
   emits('update:show', false);
 };
 </script>

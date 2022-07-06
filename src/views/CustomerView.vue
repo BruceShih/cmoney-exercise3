@@ -5,7 +5,7 @@
     >
       <h1>自選清單</h1>
     </div>
-    <div class="flex justify-start items-center mb-3">
+    <div class="flex justify-start items-center mb-4">
       <label
         for="CountrySelector"
         class="mr-2"
@@ -56,7 +56,7 @@
         共 {{ totalItems }} 人
       </div>
     </div>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover mb-4">
       <thead>
         <tr>
           <th>已加入</th>
@@ -118,11 +118,13 @@
         </tr>
       </tbody>
     </table>
-    <BasePaginator
-      :current-page="currentPage"
-      :total-pages="totalPages"
-      @change="onPageChange"
-    />
+    <div class="flex justify-center items-center">
+      <BasePaginator
+        :current-page="currentPage"
+        :total-pages="totalPages"
+        @change="onPageChange"
+      />
+    </div>
     <EditEmployeeModal
       :show="showEditModal"
       :employee="selectedEmployee"
@@ -256,6 +258,8 @@ const onDelete = (id) => {
       employees.value = data.value;
 
       emit({ type: 'success', text: '刪除成功' });
+
+      getPagedEmployees(currentPage.value);
     }
   });
 };

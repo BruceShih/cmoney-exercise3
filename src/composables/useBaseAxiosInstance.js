@@ -1,12 +1,18 @@
 import { ref } from 'vue';
 import { useEventBus } from '@vueuse/core';
 import axios from 'axios';
+import store from '../store';
 
 export default function useBaseAxiosInstance() {
   const { emit } = useEventBus('loader');
+
+  const user = store.getters['authStore/getUser'];
   const instance = axios.create({
     baseURL: 'http://localhost:3000',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.accessToken}`,
+    },
   });
 
   instance.interceptors.request.use((config) => {

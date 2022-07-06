@@ -1,57 +1,74 @@
 <template>
-  <div class="flex justify-center items-center paginator">
-    <BaseButton
-      variant="primary"
-      outline
-      :disabled="current === start"
+  <ul class="paginator">
+    <li
+      class="page-item"
+      :class="{ disabled: current === start }"
       @click="goToPreviousPage"
+      @keydown="onKeydown"
     >
-      «
-    </BaseButton>
-    <BaseButton
+      <a
+        class="page-link"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li
       v-if="start - 1 > 0"
-      variant="primary"
-      outline
-      disabled
+      class="page-item disabled"
     >
-      ...
-    </BaseButton>
+      <a
+        class="page-link"
+      >
+        ...
+      </a>
+    </li>
     <template
       v-for="n in (total >= 8 ? 8 : total)"
     >
-      <BaseButton
+      <li
         v-if="start <= end"
         :key="n"
+        class="page-item"
         :class="{ active: (n + start - 1) === current }"
-        variant="primary"
-        outline
         @click="goToPage(n + start - 1)"
+        @keydown="onKeydown"
       >
-        {{ n + start - 1 }}
-      </BaseButton>
+        <a
+          class="page-link"
+        >
+          {{ n + start - 1 }}
+        </a>
+      </li>
     </template>
-    <BaseButton
+    <li
       v-if="total - end > 0"
-      variant="primary"
-      outline
-      disabled
+      class="page-item disabled"
     >
-      ...
-    </BaseButton>
-    <BaseButton
-      variant="primary"
-      outline
-      :disabled="current === end"
+      <a
+        class="page-link"
+      >
+        ...
+      </a>
+    </li>
+    <li
+      class="page-item"
+      :class="{ disabled: current === end }"
       @click="goToNextPage"
+      @keydown="onKeydown"
     >
-      »
-    </BaseButton>
-  </div>
+      <a
+        class="page-link"
+        aria-label="Next"
+      >
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
 </template>
 
 <script setup>
 import { ref, toRefs } from 'vue';
-import BaseButton from './BaseButton.vue';
 
 const props = defineProps({
   currentPage: {
@@ -70,11 +87,6 @@ const start = ref(1);
 const end = ref(1);
 const { currentPage: current, totalPages: total } = toRefs(props);
 
-// watch(() => total, (newValue) => {
-//   if (newValue.value < 8) end.value = newValue.value;
-//   else end.value = 8;
-// });
-
 const updatePaginator = (page) => {
   start.value = page - 4;
   end.value = page + 4;
@@ -90,18 +102,16 @@ const updatePaginator = (page) => {
 };
 const goToPreviousPage = () => {
   if (current.value > 1) {
-    current.value -= 1;
-    updatePaginator(current.value);
+    updatePaginator(current.value - 1);
   }
 };
 const goToPage = (page) => {
-  current.value = page;
-  updatePaginator(page);
+  if (page !== current.value) updatePaginator(page);
 };
 const goToNextPage = () => {
   if (current.value < total.value) {
-    current.value += 1;
-    updatePaginator(current.value);
+    updatePaginator(current.value + 1);
   }
 };
+const onKeydown = () => {};
 </script>
