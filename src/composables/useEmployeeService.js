@@ -2,7 +2,7 @@ import { useAxios } from '@vueuse/integrations/useAxios';
 import useBaseAxiosInstance from './useBaseAxiosInstance';
 
 export default function useEmployeeService() {
-  const pageSize = 10;
+  const defaultPageSize = 10;
 
   const getEmployees = () => {
     const { instance } = useBaseAxiosInstance();
@@ -16,14 +16,14 @@ export default function useEmployeeService() {
     );
   };
 
-  const getEmployeesWithPaging = (page) => {
+  const getEmployeesWithPaging = ({ page, pageSize }) => {
     const { instance } = useBaseAxiosInstance();
 
     return useAxios(
       '/employees',
       {
         method: 'GET',
-        params: { _page: page || 1, _limit: pageSize },
+        params: { _page: page || 1, _limit: pageSize || defaultPageSize },
       },
       instance.value,
     );
@@ -41,7 +41,7 @@ export default function useEmployeeService() {
     );
   };
 
-  const getEmployeesByIdsCountryAndGenderWithPaging = (ids, page, country, gender) => {
+  const getEmployeesByIds = ({ ids }) => {
     const { instance } = useBaseAxiosInstance();
     // regex to match a list of ids one by one using lookahead, lookbehinds and non-capturing groups
     // given list: 1, 2, 3, 4
@@ -53,18 +53,42 @@ export default function useEmployeeService() {
       `/employees?id_like=${searchString}`,
       {
         method: 'GET',
+      },
+      instance.value,
+    );
+  };
+
+  const getEmployeesByIdsCountryAndGenderWithPaging = ({
+    ids,
+    page,
+    pageSize,
+    country,
+    gender,
+  }) => {
+    const { instance } = useBaseAxiosInstance();
+    const searchString = `(?:^|(?<= ))(${ids.join('|')})(?:(?= )|$)`;
+
+    return useAxios(
+      `/employees?id_like=${searchString}`,
+      {
+        method: 'GET',
         params: {
           gender: gender === 'a' ? null : gender,
           nat: country === 'All' ? null : country,
           _page: page || 1,
-          _limit: pageSize,
+          _limit: pageSize || defaultPageSize,
         },
       },
       instance.value,
     );
   };
 
-  const getEmployeesByCountryAndGenderWithPaging = (country, gender, page) => {
+  const getEmployeesByCountryAndGenderWithPaging = ({
+    country,
+    gender,
+    page,
+    pageSize,
+  }) => {
     const { instance } = useBaseAxiosInstance();
 
     return useAxios(
@@ -121,10 +145,11 @@ export default function useEmployeeService() {
   };
 
   return {
-    pageSize,
+    defaultPageSize,
     getEmployees,
     getEmployeesWithPaging,
     getEmployeesById,
+    getEmployeesByIds,
     getEmployeesByIdsCountryAndGenderWithPaging,
     getEmployeesByCountryAndGenderWithPaging,
     createEmployee,

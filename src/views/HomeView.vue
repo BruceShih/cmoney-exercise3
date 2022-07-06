@@ -5,26 +5,26 @@
     >
       <h1>前端開發人力仲介</h1>
     </div>
-    <div class="grid grid-column-8 grid-row-2 mb-4">
+    <div class="grid grid-column-8 grid-row-2 grid-gap-2 mb-4">
       <BaseCard
         v-for="employee in employees"
         :key="employee.id"
         @click="onCardClick(employee)"
       >
-        <template #card-top-overlay>
+        <template #card__top-overlay>
           <IconFemale v-if="employee.gender === 'female'" />
           <IconMale v-if="employee.gender === 'male'" />
         </template>
-        <template #card-image>
+        <template #card__image>
           <img
             :src="employee.picture.large"
             :alt="`${employee.name.title} ${employee.name.first} ${employee.name.last}`"
           >
         </template>
-        <template #card-bottom-overlay>
+        <template #card__bottom-overlay>
           {{ employee.name.first }} {{ employee.name.last }}
         </template>
-        <template #card-title>
+        <template #card__title>
           <span dir="auto">{{ employee.location.country }}</span>
           <br>
           <span dir="auto">{{ employee.location.city }}</span>
@@ -95,7 +95,6 @@ import useEmployeeService from '../composables/useEmployeeService';
 
 const { emit } = useEventBus('notification-show');
 const {
-  pageSize,
   getEmployees,
   getEmployeesWithPaging,
 } = useEmployeeService();
@@ -104,6 +103,7 @@ const employees = ref([]);
 const currentPage = ref(1);
 const totalItems = ref(0);
 const totalPages = ref(0);
+const pageSize = ref(20);
 const selectedEmployee = ref({});
 const showMap = ref(false);
 
@@ -115,12 +115,12 @@ const getTotalEmployees = () => {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
+      totalPages.value = Math.ceil(totalItems.value / pageSize.value);
     }
   });
 };
 const getPagedEmployees = (page) => {
-  getEmployeesWithPaging(page).then((res) => {
+  getEmployeesWithPaging({ page, pageSize: pageSize.value }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {

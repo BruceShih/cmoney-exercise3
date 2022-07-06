@@ -34,7 +34,7 @@
   }
 }
 
-.table-bordered {
+.table--bordered {
   > :not(caption) > * {
     border-width: 1px 0;
   }
@@ -44,19 +44,29 @@
   }
 }
 
-.table-striped {
+.table--striped {
   > tbody > tr:nth-of-type(odd) > * {
     background-color: $table-striped-bg-color;
     color: $table-font-color;
   }
 }
 
-.table-active {
+.table--active {
   background-color: $table-active-bg-color;
   color: $table-font-color;
 }
 
-.table-hover > tbody > tr:hover > * {
+.table--hover > tbody > tr:not(.row-selected):hover > * {
   background-color: rgba($table-hover-bg-color, 0.1);
   color: $table-font-color;
+}
+
+tbody > tr {
+  &.row-selected {
+    background-color: rgba(papayawhip, 0.75);
+
+    > * {
+      background-color: transparent !important;
+    }
+  }
 }

@@ -25,13 +25,13 @@
     align-items: center;
   }
 
-  .modal-body {
+  .modal__body {
     display: block;
     padding: 0;
     border-radius: $modal-border-radius;
     z-index: 50;
 
-    .modal-header {
+    .modal__header {
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
@@ -40,13 +40,13 @@
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
 
-      + .model-text {
+      + .model__text {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
       }
     }
 
-    .model-text {
+    .model__text {
       padding: 1rem;
       background-color: $modal-bg-color;
       border-radius: $modal-border-radius;

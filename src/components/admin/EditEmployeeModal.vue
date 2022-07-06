@@ -2,11 +2,11 @@
   <BaseModal
     class="edit-modal"
     :show="showModal"
-    header-text-class="text-white"
-    header-bg-class="bg-gray"
+    header-text-class="text--white"
+    header-bg-class="bg--gray"
     @update:show="onCancel"
   >
-    <template #modal-header>
+    <template #modal__header>
       <span>編輯會員資料</span>
     </template>
     <template #modal-text>

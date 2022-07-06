@@ -38,13 +38,13 @@
 
         <div class="login-form-buttons">
           <button
-            class="btn btn-primary"
+            class="btn btn--primary"
             type="submit"
           >
             送出
           </button>
           <input
-            class="btn btn-outline-primary"
+            class="btn btn--outline-primary"
             type="reset"
             value="清除"
           >

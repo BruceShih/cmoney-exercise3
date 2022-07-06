@@ -15,7 +15,7 @@
           v-model="selectedCountry"
           name="CountrySelector"
           class="form-control"
-          @change="onCountryChange"
+          @change="onCountryChange($event)"
         >
           <option
             value="All"
@@ -38,7 +38,7 @@
           v-model="selectedGender"
           name="GenderSelector"
           class="form-control"
-          @change="onGenderChange"
+          @change="onGenderChange($event)"
         >
           <option
             value="a"
@@ -53,10 +53,15 @@
       <div
         class="flex-grow text-right"
       >
-        共 {{ totalItems }} 人
+        <span v-if="filteredItems > 0">
+          已篩選 {{ filteredItems }} 人，
+        </span>
+        <span>
+          共 {{ totalItems }} 人
+        </span>
       </div>
     </div>
-    <table class="table table-striped table-hover mb-4">
+    <table class="table table--striped table--hover mb-4">
       <thead>
         <tr>
           <th colspan="2">
@@ -75,14 +80,16 @@
         <tr
           v-for="employee in employees"
           :key="employee.id"
+          :class="{ 'row-selected': selectedEmployees.includes(employee.id) }"
         >
           <td class="text-center">
             <label :for="`Employee${employee.id}`">
               <input
                 :id="`Employee${employee.id}`"
                 :name="`Employee${employee.id}`"
+                :checked="selectedEmployees.includes(employee.id)"
                 type="checkbox"
-                @change="onCheckboxChange(employee.id)"
+                @change="onCheckboxChange(employee.id, $event)"
               >
             </label>
           </td>
@@ -134,7 +141,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useEventBus } from '@vueuse/core';
 import EditEmployeeModal from '../components/admin/EditEmployeeModal.vue';
 import BaseButton from '../components/BaseButton.vue';
@@ -144,7 +151,7 @@ import store from '../store';
 
 const { emit } = useEventBus('notification-show');
 const {
-  pageSize,
+  defaultPageSize,
   getEmployees,
   getEmployeesWithPaging,
   getEmployeesByCountryAndGenderWithPaging,
@@ -158,10 +165,27 @@ const selectedGender = ref('a');
 const currentPage = ref(1);
 const totalItems = ref(0);
 const totalPages = ref(0);
+const filteredItems = ref(0);
 
 const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
+const selectedEmployees = computed(() => store.getters['employeeStore/getEmployees']);
+
+const updateSelect = (data) => {
+  const uniques = new Set();
+  totalItems.value = data.length;
+  totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
+  countries.value = data.filter((employee) => {
+    const isDuplicate = uniques.has(employee.nat);
+    uniques.add(employee.nat);
+    if (!isDuplicate) return true;
+    return false;
+  }).map((employee) => ({
+    nat: employee.nat,
+    country: employee.location.country,
+  }));
+};
 const getTotalEmployees = () => {
   getEmployees().then((res) => {
     const { data, error } = res;
@@ -169,23 +193,12 @@ const getTotalEmployees = () => {
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
-      const uniques = new Set();
-      totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
-      countries.value = data.value.filter((employee) => {
-        const isDuplicate = uniques.has(employee.nat);
-        uniques.add(employee.nat);
-        if (!isDuplicate) return true;
-        return false;
-      }).map((employee) => ({
-        nat: employee.nat,
-        country: employee.location.country,
-      }));
+      updateSelect(data.value);
     }
   });
 };
 const getPagedEmployees = (page) => {
-  getEmployeesWithPaging(page).then((res) => {
+  getEmployeesWithPaging({ page }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
@@ -196,27 +209,37 @@ const getPagedEmployees = (page) => {
   });
 };
 const getPagedEmployeesWithFilter = () => {
-  getEmployeesByCountryAndGenderWithPaging(
-    selectedCountry.value,
-    selectedGender.value,
-    currentPage.value,
-  ).then((res) => {
+  getEmployeesByCountryAndGenderWithPaging({
+    country: selectedCountry.value,
+    gender: selectedGender.value,
+    page: currentPage.value,
+  }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
-      totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
+      filteredItems.value = data.value.length;
+      totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
       employees.value = data.value;
     }
   });
 };
-const onCountryChange = () => {
-  getPagedEmployeesWithFilter();
+const onCountryChange = (event) => {
+  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
+  else {
+    filteredItems.value = 0;
+    getTotalEmployees();
+    getPagedEmployees(1);
+  }
 };
-const onGenderChange = () => {
-  getPagedEmployeesWithFilter();
+const onGenderChange = (event) => {
+  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
+  else {
+    filteredItems.value = 0;
+    getTotalEmployees();
+    getPagedEmployees(1);
+  }
 };
 const onPageChange = (page) => {
   currentPage.value = page;
@@ -226,8 +249,16 @@ const onPageChange = (page) => {
     getPagedEmployees(page);
   }
 };
-const onCheckboxChange = (id) => {
-  store.commit('employeeStore/add', id);
+const onCheckboxChange = (id, event) => {
+  const tr = event.target.parentNode.parentNode.parentNode;
+
+  if (event.target.checked === true) {
+    store.commit('employeeStore/add', id);
+    tr.classList.add('row-selected');
+  } else {
+    store.commit('employeeStore/remove', id);
+    tr.classList.remove('row-selected');
+  }
 };
 const openEditModal = (employee) => {
   showEditModal.value = true;
@@ -241,7 +272,7 @@ const onDelete = (id) => {
       emit({ type: 'danger', text: '刪除失敗！' });
     } else {
       totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
+      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
       employees.value = data.value;
 
       emit({ type: 'success', text: '刪除成功' });

@@ -20,12 +20,13 @@ onShow(({ type, text }) => {
   classList.value = [];
   classList.value.push('show');
   if (['danger', 'success'].includes(type)) {
-    classList.value.push(`bg-${type}`);
+    classList.value.push(`bg--${type}`);
   }
   message.value = text;
 });
 
 onHide(() => {
   classList.value.splice(classList.value.indexOf('show'), 1);
+  classList.value.push('none');
 });
 </script>

@@ -1,13 +1,13 @@
 <template>
   <ul class="paginator">
     <li
-      class="page-item"
+      class="paginator__item"
       :class="{ disabled: current === start }"
       @click="goToPreviousPage"
       @keydown="onKeydown"
     >
       <a
-        class="page-link"
+        class="paginator__link"
         aria-label="Previous"
       >
         <span aria-hidden="true">&laquo;</span>
@@ -15,10 +15,10 @@
     </li>
     <li
       v-if="start - 1 > 0"
-      class="page-item disabled"
+      class="paginator__item disabled"
     >
       <a
-        class="page-link"
+        class="paginator__link"
       >
         ...
       </a>
@@ -29,36 +29,36 @@
       <li
         v-if="start <= end"
         :key="n"
-        class="page-item"
+        class="paginator__item"
         :class="{ active: (n + start - 1) === current }"
         @click="goToPage(n + start - 1)"
         @keydown="onKeydown"
       >
         <a
-          class="page-link"
+          class="paginator__link"
         >
           {{ n + start - 1 }}
         </a>
       </li>
     </template>
     <li
-      v-if="total - end > 0"
-      class="page-item disabled"
+      v-if="total - end > 0 && total > maximumDisplayingPages"
+      class="paginator__item disabled"
     >
       <a
-        class="page-link"
+        class="paginator__link"
       >
         ...
       </a>
     </li>
     <li
-      class="page-item"
+      class="paginator__item"
       :class="{ disabled: current === end }"
       @click="goToNextPage"
       @keydown="onKeydown"
     >
       <a
-        class="page-link"
+        class="paginator__link"
         aria-label="Next"
       >
         <span aria-hidden="true">&raquo;</span>
@@ -85,17 +85,19 @@ const emits = defineEmits(['change']);
 
 const start = ref(1);
 const end = ref(1);
+const maximumDisplayingPages = ref(8);
 const { currentPage: current, totalPages: total } = toRefs(props);
 
 const updatePaginator = (page) => {
-  start.value = page - 4;
-  end.value = page + 4;
+  start.value = page - maximumDisplayingPages.value / 2;
+  end.value = page + maximumDisplayingPages.value / 2;
   if (start.value < 1) {
     start.value = 1;
-    end.value = 8;
+    end.value = maximumDisplayingPages.value;
   }
   if (end.value > total.value) {
-    start.value = total.value - 7;
+    start.value = total.value - (maximumDisplayingPages.value - 1) < 1
+      ? 1 : total.value - (maximumDisplayingPages.value - 1);
     end.value = total.value;
   }
   emits('change', page);

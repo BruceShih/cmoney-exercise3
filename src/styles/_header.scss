@@ -6,22 +6,22 @@
   background-color: $header-bg-color;
   height: $header-height;
 
-  .header-logo,
-  .header-profile {
+  .header__logo,
+  .header__profile {
     display: flex;
     align-items: center;
     width: 145px;
   }
 
-  .header-logo {
+  .header__logo {
     justify-content: flex-start;
   }
 
-  .header-profile {
+  .header__profile {
     justify-content: flex-end;
   }
 
-  .header-nav > a {
+  .header__nav > a {
     margin: $header-item-margin-y $header-item-margin-x;
     color: $header-font-color;
     text-decoration: none;

@@ -1,14 +1,16 @@
 <template>
   <header class="header">
-    <div class="header-logo">
-      <img
-        src="../assets/logo.png"
-        alt="Logo"
-      >
+    <div class="header__logo">
+      <RouterLink to="/">
+        <img
+          src="../assets/logo.png"
+          alt="Logo"
+        >
+      </RouterLink>
     </div>
     <nav
       v-if="isLoggedIn"
-      class="header-nav"
+      class="header__nav"
     >
       <RouterLink to="/">
         首頁
@@ -16,11 +18,14 @@
       <RouterLink to="/admin">
         會員列表
       </RouterLink>
-      <RouterLink to="/customer">
+      <RouterLink
+        v-if="hasSelection"
+        to="/customer"
+      >
         自選清單
       </RouterLink>
     </nav>
-    <div class="header-profile">
+    <div class="header__profile">
       <BaseButton
         v-if="isLoggedIn"
         variant="white"
@@ -38,7 +43,7 @@
       </BaseButton>
       <RouterLink
         v-else
-        class="btn btn-white"
+        class="btn btn--white"
         to="/login"
       >
         登入
@@ -63,12 +68,15 @@ const { logout } = useAuthService();
 
 const showCreateModel = ref(false);
 const isLoggedIn = computed(() => store.getters['authStore/isAuthenticated']);
+const hasSelection = computed(() => store.getters['employeeStore/getEmployees'].length > 0);
 
 const openCreateModal = () => {
   showCreateModel.value = true;
 };
 const doLogout = () => {
   logout();
-  vm.proxy.$router.push('/login');
+  if (vm.proxy.$route.path !== '/') {
+    vm.proxy.$router.push('/');
+  }
 };
 </script>

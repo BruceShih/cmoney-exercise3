@@ -2,11 +2,11 @@
   <BaseModal
     class="create-modal"
     :show="showModal"
-    header-text-class="text-white"
-    header-bg-class="bg-gray"
+    header-text-class="text--white"
+    header-bg-class="bg--gray"
     @update:show="onCancel"
   >
-    <template #modal-header>
+    <template #modal__header>
       <span>新增會員資料</span>
     </template>
     <template #modal-text>
@@ -297,7 +297,11 @@ const imagePreviewUrl = ref('');
 
 const onPictureChange = (e) => {
   const file = e.target.files[0];
-  imagePreviewUrl.value = URL.createObjectURL(file);
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    imagePreviewUrl.value = event.target.result;
+  };
+  reader.readAsDataURL(file);
 };
 const onCreate = () => {
   newEmployee.value.picture.large = imagePreviewUrl.value;

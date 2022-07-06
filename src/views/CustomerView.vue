@@ -15,7 +15,7 @@
           v-model="selectedCountry"
           name="CountrySelector"
           class="form-control"
-          @change="onCountryChange"
+          @change="onCountryChange($event)"
         >
           <option
             value="All"
@@ -38,7 +38,7 @@
           v-model="selectedGender"
           name="GenderSelector"
           class="form-control"
-          @change="onGenderChange"
+          @change="onGenderChange($event)"
         >
           <option
             value="a"
@@ -53,10 +53,15 @@
       <div
         class="flex-grow text-right"
       >
-        共 {{ totalItems }} 人
+        <span v-if="filteredItems > 0">
+          已篩選 {{ filteredItems }} 人，
+        </span>
+        <span>
+          共 {{ totalItems }} 人
+        </span>
       </div>
     </div>
-    <table class="table table-striped table-hover mb-4">
+    <table class="table table--striped table--hover mb-4">
       <thead>
         <tr>
           <th>已加入</th>
@@ -144,7 +149,8 @@ import store from '../store';
 
 const { emit } = useEventBus('notification-show');
 const {
-  pageSize,
+  defaultPageSize,
+  getEmployeesByIds,
   getEmployeesByIdsCountryAndGenderWithPaging,
   deleteEmployeeById,
 } = useEmployeeService();
@@ -156,14 +162,18 @@ const selectedGender = ref('a');
 const currentPage = ref(1);
 const totalItems = ref(0);
 const totalPages = ref(0);
+const filteredItems = ref(0);
 
 const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
+const updatePages = () => {
+  const ids = store.getters['employeeStore/getEmployees'];
+  totalItems.value = ids.length;
+  totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
+};
 const updateSelect = (data) => {
   const uniques = new Set();
-  totalItems.value = data.length;
-  totalPages.value = Math.ceil(totalItems.value / pageSize);
   countries.value = data.filter((employee) => {
     const isDuplicate = uniques.has(employee.nat);
     uniques.add(employee.nat);
@@ -177,12 +187,13 @@ const updateSelect = (data) => {
 const getTotalEmployees = () => {
   const ids = store.getters['employeeStore/getEmployees'];
 
-  getEmployeesByIdsCountryAndGenderWithPaging(ids).then((res) => {
+  getEmployeesByIds({ ids }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
+      updatePages();
       updateSelect(data.value);
     }
   });
@@ -190,41 +201,51 @@ const getTotalEmployees = () => {
 const getPagedEmployees = (page) => {
   const ids = store.getters['employeeStore/getEmployees'];
 
-  getEmployeesByIdsCountryAndGenderWithPaging(ids, page).then((res) => {
+  getEmployeesByIdsCountryAndGenderWithPaging({ ids, page }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       employees.value = data.value;
-      updateSelect(data.value);
     }
   });
 };
 const getPagedEmployeesWithFilter = () => {
   const ids = store.getters['employeeStore/getEmployees'];
 
-  getEmployeesByIdsCountryAndGenderWithPaging(
+  getEmployeesByIdsCountryAndGenderWithPaging({
     ids,
-    currentPage.value,
-    selectedCountry.value,
-    selectedGender.value,
-  ).then((res) => {
+    page: currentPage.value,
+    country: selectedCountry.value,
+    gender: selectedGender.value,
+  }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
+      filteredItems.value = data.value.length;
+      totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
       employees.value = data.value;
-      updateSelect(data.value);
     }
   });
 };
-const onCountryChange = () => {
-  getPagedEmployeesWithFilter();
+const onCountryChange = (event) => {
+  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
+  else {
+    filteredItems.value = 0;
+    getTotalEmployees();
+    getPagedEmployees(1);
+  }
 };
-const onGenderChange = () => {
-  getPagedEmployeesWithFilter();
+const onGenderChange = (event) => {
+  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
+  else {
+    filteredItems.value = 0;
+    getTotalEmployees();
+    getPagedEmployees(1);
+  }
 };
 const onPageChange = (page) => {
   currentPage.value = page;
@@ -241,6 +262,7 @@ const onCheckboxChange = (id, event) => {
     store.commit('employeeStore/remove', id);
   }
   getPagedEmployees(currentPage.value);
+  updatePages();
 };
 const openEditModal = (employee) => {
   showEditModal.value = true;
@@ -254,7 +276,7 @@ const onDelete = (id) => {
       emit({ type: 'danger', text: '刪除失敗！' });
     } else {
       totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / pageSize);
+      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
       employees.value = data.value;
 
       emit({ type: 'success', text: '刪除成功' });

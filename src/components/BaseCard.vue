@@ -4,23 +4,23 @@
     @click="onCardClick"
     @keydown="onKeydown"
   >
-    <div class="card-header">
-      <slot name="card-header" />
+    <div class="card__header">
+      <slot name="card__header" />
     </div>
-    <div class="card-image">
-      <div class="card-top-overlay">
-        <slot name="card-top-overlay" />
+    <div class="card__image">
+      <div class="card__top-overlay">
+        <slot name="card__top-overlay" />
       </div>
-      <slot name="card-image" />
+      <slot name="card__image" />
       <div
-        class="card-bottom-overlay"
+        class="card__bottom-overlay"
         dir="auto"
       >
-        <slot name="card-bottom-overlay" />
+        <slot name="card__bottom-overlay" />
       </div>
     </div>
-    <div class="card-title">
-      <slot name="card-title" />
+    <div class="card__title">
+      <slot name="card__title" />
     </div>
   </div>
 </template>

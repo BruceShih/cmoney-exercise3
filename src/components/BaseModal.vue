@@ -7,16 +7,16 @@
     >
       <div
         ref="modalBody"
-        class="modal-body"
+        class="modal__body"
       >
         <div
           v-if="!noHeader"
-          class="modal-header"
+          class="modal__header"
           :class="[headerTextClass, headerBgClass]"
         >
-          <slot name="modal-header" />
+          <slot name="modal__header" />
         </div>
-        <div class="model-text">
+        <div class="model__text">
           <slot name="modal-text" />
         </div>
       </div>
@@ -43,11 +43,11 @@ const props = defineProps({
   },
   headerTextClass: {
     type: String,
-    default: 'text-black',
+    default: 'text--black',
   },
   headerBgClass: {
     type: String,
-    default: 'bg-white',
+    default: 'bg--white',
   },
 });
 

@@ -35,9 +35,9 @@ const classes = computed(() => {
   const classList = ['btn'];
   if (props.variant) {
     if (props.outline) {
-      classList.push(`btn-outline-${props.variant}`);
+      classList.push(`btn--outline-${props.variant}`);
     } else {
-      classList.push(`btn-${props.variant}`);
+      classList.push(`btn--${props.variant}`);
     }
   }
   return classList;

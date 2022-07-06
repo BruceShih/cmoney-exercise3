@@ -5,7 +5,7 @@ const employeeStore = {
   }),
   getters: {
     getEmployees(state) {
-      return state.selectedEmployeeIds;
+      return state.selectedEmployeeIds.sort((a, b) => a - b);
     },
   },
   mutations: {
