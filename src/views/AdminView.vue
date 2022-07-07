@@ -93,7 +93,7 @@
               >
             </label>
           </td>
-          <td>
+          <td class="w-10">
             <img
               :src="employee.picture.thumbnail"
               :alt="`${employee.name.first} ${employee.name.last}`"
@@ -150,6 +150,7 @@ import useEmployeeService from '../composables/useEmployeeService';
 import store from '../store';
 
 const { emit } = useEventBus('notification-show');
+const { on: onEmployeeCreate } = useEventBus('employee-create');
 const {
   defaultPageSize,
   getEmployees,
@@ -281,6 +282,9 @@ const onDelete = (id) => {
     }
   });
 };
+onEmployeeCreate((success) => {
+  if (success) getPagedEmployees(currentPage.value);
+});
 
 onMounted(() => {
   if (totalItems.value === 0) getTotalEmployees();

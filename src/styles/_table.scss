@@ -6,7 +6,7 @@
   border-collapse: collapse;
   border-spacing: 0;
   border: 1px solid $table-border-color;
-  
+
   > :not(caption) > * > * {
     padding: 0.5rem 0.5rem;
     border-bottom-width: 1px;
@@ -16,7 +16,11 @@
     vertical-align: bottom;
 
     tr {
-      background: linear-gradient(180deg, rgba(246,246,246,1) 0%, rgba(221,221,221,1) 100%) !important;
+      background: linear-gradient(
+        180deg,
+        rgba(246, 246, 246, 1) 0%,
+        rgba(221, 221, 221, 1) 100%
+      ) !important;
     }
   }
 
@@ -24,7 +28,16 @@
     vertical-align: inherit;
 
     tr {
-      max-height: 4.375rem;
+      height: 4.375rem;
+    }
+
+    td {
+      img {
+        width: auto;
+        height: auto;
+        max-height: 3.375rem;
+        vertical-align: middle;
+      }
     }
   }
 

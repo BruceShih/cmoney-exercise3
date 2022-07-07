@@ -217,6 +217,7 @@ import BaseModal from '../BaseModal.vue';
 import useEmployeeService from '../../composables/useEmployeeService';
 
 const { emit } = useEventBus('notification-show');
+const { emit: employeeEmit } = useEventBus('employee-create');
 const { createEmployee } = useEmployeeService();
 
 const props = defineProps({
@@ -305,6 +306,8 @@ const onPictureChange = (e) => {
 };
 const onCreate = () => {
   newEmployee.value.picture.large = imagePreviewUrl.value;
+  newEmployee.value.picture.medium = imagePreviewUrl.value;
+  newEmployee.value.picture.thumbnail = imagePreviewUrl.value;
   newEmployee.value.name.first = firstName.value;
   newEmployee.value.name.last = lastName.value;
   newEmployee.value.email = email.value;
@@ -324,6 +327,7 @@ const onCreate = () => {
       emit({ type: 'danger', text: '建立失敗！' });
     } else {
       emits('update:show', false);
+      employeeEmit(true);
       emit({ type: 'success', text: '建立成功' });
     }
   });

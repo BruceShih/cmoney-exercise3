@@ -12,7 +12,7 @@ import { ref } from 'vue';
 import { useEventBus } from '@vueuse/core';
 
 const { on: onShow } = useEventBus('notification-show');
-const { on: onHide } = useEventBus('notification-hide');
+const { emit, on: onHide } = useEventBus('notification-hide');
 const message = ref('');
 const classList = ref([]);
 
@@ -23,6 +23,10 @@ onShow(({ type, text }) => {
     classList.value.push(`bg--${type}`);
   }
   message.value = text;
+
+  setTimeout(() => {
+    emit();
+  }, 1500);
 });
 
 onHide(() => {
