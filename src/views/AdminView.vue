@@ -154,7 +154,6 @@ const { on: onEmployeeCreate } = useEventBus('employee-create');
 const {
   defaultPageSize,
   getEmployees,
-  getEmployeesWithPaging,
   getEmployeesByCountryAndGenderWithPaging,
   deleteEmployeeById,
 } = useEmployeeService();
@@ -172,11 +171,10 @@ const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
 const selectedEmployees = computed(() => store.getters['employeeStore/getEmployees']);
+const isFiltered = computed(() => selectedCountry.value !== 'All' || selectedGender.value !== 'a');
 
 const updateSelect = (data) => {
   const uniques = new Set();
-  totalItems.value = data.length;
-  totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
   countries.value = data.filter((employee) => {
     const isDuplicate = uniques.has(employee.nat);
     uniques.add(employee.nat);
@@ -195,60 +193,46 @@ const getTotalEmployees = () => {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
       updateSelect(data.value);
+      totalItems.value = data.value.length;
+      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
     }
   });
 };
 const getPagedEmployees = (page) => {
-  getEmployeesWithPaging({ page }).then((res) => {
-    const { data, error } = res;
-
-    if (error.value) {
-      emit({ type: 'danger', text: '讀取資料失敗！' });
-    } else {
-      employees.value = data.value;
-    }
-  });
-};
-const getPagedEmployeesWithFilter = () => {
   getEmployeesByCountryAndGenderWithPaging({
     country: selectedCountry.value,
     gender: selectedGender.value,
-    page: currentPage.value,
+    page: page || currentPage.value,
   }).then((res) => {
     const { data, error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
-      filteredItems.value = data.value.length;
-      totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
+      if (isFiltered.value) {
+        filteredItems.value = data.value.length;
+        totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
+      } else if (selectedCountry.value === 'All' && selectedGender.value === 'a') {
+        getTotalEmployees();
+        filteredItems.value = 0;
+      }
       employees.value = data.value;
     }
   });
 };
-const onCountryChange = (event) => {
-  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
-  else {
-    filteredItems.value = 0;
-    getTotalEmployees();
-    getPagedEmployees(1);
-  }
+const onCountryChange = () => {
+  currentPage.value = 1;
+  getPagedEmployees(currentPage.value);
 };
-const onGenderChange = (event) => {
-  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
-  else {
-    filteredItems.value = 0;
-    getTotalEmployees();
-    getPagedEmployees(1);
-  }
+const onGenderChange = () => {
+  currentPage.value = 1;
+  getPagedEmployees(currentPage.value);
 };
 const onPageChange = (page) => {
-  currentPage.value = page;
-  if (selectedCountry.value !== 'All' || selectedGender.value !== 'a') {
-    getPagedEmployeesWithFilter();
-  } else {
-    getPagedEmployees(page);
-  }
+  if (currentPage.value !== 1 && isFiltered.value) {
+    currentPage.value = 1;
+  } else currentPage.value = page;
+  getPagedEmployees();
 };
 const onCheckboxChange = (id, event) => {
   const tr = event.target.parentNode.parentNode.parentNode;
@@ -267,23 +251,18 @@ const openEditModal = (employee) => {
 };
 const onDelete = (id) => {
   deleteEmployeeById(id).then((res) => {
-    const { data, error } = res;
+    const { error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '刪除失敗！' });
     } else {
-      totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
-      employees.value = data.value;
-
       emit({ type: 'success', text: '刪除成功' });
-
-      getPagedEmployees(currentPage.value);
+      getPagedEmployees();
     }
   });
 };
 onEmployeeCreate((success) => {
-  if (success) getPagedEmployees(currentPage.value);
+  if (success) getPagedEmployees();
 });
 
 onMounted(() => {

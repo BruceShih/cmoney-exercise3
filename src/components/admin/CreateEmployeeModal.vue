@@ -319,6 +319,7 @@ const onCreate = () => {
   newEmployee.value.location.coordinates.longitude = longitude.value;
   newEmployee.value.location.street.name = street.value;
   newEmployee.value.cell = phone.value;
+  newEmployee.value.nat = country.value;
 
   createEmployee(newEmployee.value).then((res) => {
     const { error } = res;

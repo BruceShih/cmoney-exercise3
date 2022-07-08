@@ -91,7 +91,7 @@
               >
             </label>
           </td>
-          <td>
+          <td class="w-10">
             <img
               :src="employee.picture.thumbnail"
               :alt="`${employee.name.first} ${employee.name.last}`"
@@ -139,7 +139,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useEventBus } from '@vueuse/core';
 import EditEmployeeModal from '../components/admin/EditEmployeeModal.vue';
 import BaseButton from '../components/BaseButton.vue';
@@ -167,11 +167,7 @@ const filteredItems = ref(0);
 const showEditModal = ref(false);
 const selectedEmployee = ref({});
 
-const updatePages = () => {
-  const ids = store.getters['employeeStore/getEmployees'];
-  totalItems.value = ids.length;
-  totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
-};
+const isFiltered = computed(() => selectedCountry.value !== 'All' || selectedGender.value !== 'a');
 const updateSelect = (data) => {
   const uniques = new Set();
   countries.value = data.filter((employee) => {
@@ -193,30 +189,18 @@ const getTotalEmployees = () => {
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
-      updatePages();
       updateSelect(data.value);
+      totalItems.value = data.value.length;
+      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
     }
   });
 };
 const getPagedEmployees = (page) => {
   const ids = store.getters['employeeStore/getEmployees'];
 
-  getEmployeesByIdsCountryAndGenderWithPaging({ ids, page }).then((res) => {
-    const { data, error } = res;
-
-    if (error.value) {
-      emit({ type: 'danger', text: '讀取資料失敗！' });
-    } else {
-      employees.value = data.value;
-    }
-  });
-};
-const getPagedEmployeesWithFilter = () => {
-  const ids = store.getters['employeeStore/getEmployees'];
-
   getEmployeesByIdsCountryAndGenderWithPaging({
     ids,
-    page: currentPage.value,
+    page: page || currentPage.value,
     country: selectedCountry.value,
     gender: selectedGender.value,
   }).then((res) => {
@@ -225,35 +209,30 @@ const getPagedEmployeesWithFilter = () => {
     if (error.value) {
       emit({ type: 'danger', text: '讀取資料失敗！' });
     } else {
-      filteredItems.value = data.value.length;
-      totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
+      if (isFiltered.value) {
+        filteredItems.value = data.value.length;
+        totalPages.value = Math.ceil(filteredItems.value / defaultPageSize);
+      } else if (selectedCountry.value === 'All' && selectedGender.value === 'a') {
+        getTotalEmployees();
+        filteredItems.value = 0;
+      }
       employees.value = data.value;
     }
   });
 };
-const onCountryChange = (event) => {
-  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
-  else {
-    filteredItems.value = 0;
-    getTotalEmployees();
-    getPagedEmployees(1);
-  }
+const onCountryChange = () => {
+  currentPage.value = 1;
+  getPagedEmployees(currentPage.value);
 };
-const onGenderChange = (event) => {
-  if (event.target.selectedIndex > 0) getPagedEmployeesWithFilter();
-  else {
-    filteredItems.value = 0;
-    getTotalEmployees();
-    getPagedEmployees(1);
-  }
+const onGenderChange = () => {
+  currentPage.value = 1;
+  getPagedEmployees(currentPage.value);
 };
 const onPageChange = (page) => {
-  currentPage.value = page;
-  if (selectedCountry.value !== 'All' || selectedGender.value !== 'a') {
-    getPagedEmployeesWithFilter();
-  } else {
-    getPagedEmployees(page);
-  }
+  if (currentPage.value !== 1 && isFiltered.value) {
+    currentPage.value = 1;
+  } else currentPage.value = page;
+  getPagedEmployees();
 };
 const onCheckboxChange = (id, event) => {
   if (event.target.checked === true) {
@@ -261,8 +240,14 @@ const onCheckboxChange = (id, event) => {
   } else {
     store.commit('employeeStore/remove', id);
   }
-  getPagedEmployees(currentPage.value);
-  updatePages();
+  const ids = store.getters['employeeStore/getEmployees'];
+  const total = Math.ceil(ids.length / defaultPageSize);
+  if (total < totalPages.value) {
+    currentPage.value -= 1;
+    totalPages.value = total;
+    if (currentPage.value < 1) currentPage.value = 1;
+  }
+  getPagedEmployees();
 };
 const openEditModal = (employee) => {
   showEditModal.value = true;
@@ -270,18 +255,13 @@ const openEditModal = (employee) => {
 };
 const onDelete = (id) => {
   deleteEmployeeById(id).then((res) => {
-    const { data, error } = res;
+    const { error } = res;
 
     if (error.value) {
       emit({ type: 'danger', text: '刪除失敗！' });
     } else {
-      totalItems.value = data.value.length;
-      totalPages.value = Math.ceil(totalItems.value / defaultPageSize);
-      employees.value = data.value;
-
       emit({ type: 'success', text: '刪除成功' });
-
-      getPagedEmployees(currentPage.value);
+      getPagedEmployees();
     }
   });
 };
