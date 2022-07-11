@@ -2,7 +2,7 @@
   <ul class="paginator">
     <li
       class="paginator__item"
-      :class="{ disabled: current === start }"
+      :class="{ disabled: currentPage === start }"
       @click="goToPreviousPage"
       @keydown="onKeydown"
     >
@@ -23,26 +23,22 @@
         ...
       </a>
     </li>
-    <template
-      v-for="n in (total >= 8 ? 8 : total)"
-    >
-      <li
-        v-if="start <= end"
-        :key="n"
-        class="paginator__item"
-        :class="{ active: (n + start - 1) === current }"
-        @click="goToPage(n + start - 1)"
-        @keydown="onKeydown"
-      >
-        <a
-          class="paginator__link"
-        >
-          {{ n + start - 1 }}
-        </a>
-      </li>
-    </template>
     <li
-      v-if="total - end > 0 && total > maximumDisplayingPages"
+      v-for="n in pages"
+      :key="n"
+      class="paginator__item"
+      :class="{ active: n === currentPage }"
+      @click="goToPage(n)"
+      @keydown="onKeydown"
+    >
+      <a
+        class="paginator__link"
+      >
+        {{ n }}
+      </a>
+    </li>
+    <li
+      v-if="totalPages - end > 0"
       class="paginator__item disabled"
     >
       <a
@@ -53,7 +49,7 @@
     </li>
     <li
       class="paginator__item"
-      :class="{ disabled: current === end }"
+      :class="{ disabled: currentPage === end }"
       @click="goToNextPage"
       @keydown="onKeydown"
     >
@@ -68,7 +64,10 @@
 </template>
 
 <script setup>
-import { ref, toRefs } from 'vue';
+import {
+  ref,
+  computed,
+} from 'vue';
 
 const props = defineProps({
   currentPage: {
@@ -83,36 +82,41 @@ const props = defineProps({
 
 const emits = defineEmits(['change']);
 
-const start = ref(1);
-const end = ref(1);
-const maximumDisplayingPages = ref(8);
-const { currentPage: current, totalPages: total } = toRefs(props);
+const length = ref(8);
+const start = computed(() => {
+  if (props.currentPage - length.value / 2 < 1) {
+    return 1;
+  }
+  return props.currentPage - length.value / 2;
+});
+const end = computed(() => {
+  if (props.currentPage + length.value / 2 > props.totalPages) {
+    return props.totalPages;
+  }
+  return props.currentPage + length.value / 2;
+});
+const pages = computed(() => {
+  const arr = [];
+  for (let i = start.value; i <= end.value; i += 1) {
+    arr.push(i);
+  }
+  return arr;
+});
 
 const updatePaginator = (page) => {
-  start.value = page - maximumDisplayingPages.value / 2;
-  end.value = page + maximumDisplayingPages.value / 2;
-  if (start.value < 1) {
-    start.value = 1;
-    end.value = maximumDisplayingPages.value;
-  }
-  if (end.value > total.value) {
-    start.value = total.value - (maximumDisplayingPages.value - 1) < 1
-      ? 1 : total.value - (maximumDisplayingPages.value - 1);
-    end.value = total.value;
-  }
   emits('change', page);
 };
 const goToPreviousPage = () => {
-  if (current.value > 1) {
-    updatePaginator(current.value - 1);
+  if (props.currentPage > 1) {
+    updatePaginator(props.currentPage - 1);
   }
 };
 const goToPage = (page) => {
-  if (page !== current.value) updatePaginator(page);
+  if (page !== props.currentPage) updatePaginator(page);
 };
 const goToNextPage = () => {
-  if (current.value < total.value) {
-    updatePaginator(current.value + 1);
+  if (props.currentPage < props.totalPages) {
+    updatePaginator(props.currentPage + 1);
   }
 };
 const onKeydown = () => {};

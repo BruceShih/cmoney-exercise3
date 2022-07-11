@@ -257,12 +257,23 @@ const onDelete = (id) => {
       emit({ type: 'danger', text: '刪除失敗！' });
     } else {
       emit({ type: 'success', text: '刪除成功' });
-      getPagedEmployees();
+
+      if (Math.ceil((totalItems.value - 1) / defaultPageSize) <= totalPages.value) {
+        currentPage.value -= 1;
+        getTotalEmployees();
+      }
+      getPagedEmployees(currentPage.value);
     }
   });
 };
 onEmployeeCreate((success) => {
-  if (success) getPagedEmployees();
+  if (success) {
+    if (Math.ceil((totalItems.value + 1) / defaultPageSize) >= totalPages.value) {
+      currentPage.value += 1;
+      getTotalEmployees();
+    }
+    getPagedEmployees(currentPage.value);
+  }
 });
 
 onMounted(() => {

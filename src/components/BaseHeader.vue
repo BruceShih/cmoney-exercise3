@@ -57,7 +57,13 @@
 </template>
 
 <script setup>
-import { ref, computed, getCurrentInstance } from 'vue';
+import {
+  ref,
+  computed,
+  onMounted,
+  getCurrentInstance,
+} from 'vue';
+import { useCookies } from '@vueuse/integrations/useCookies';
 import BaseButton from './BaseButton.vue';
 import CreateEmployeeModal from './admin/CreateEmployeeModal.vue';
 import useAuthService from '../composables/useAuthService';
@@ -79,4 +85,11 @@ const doLogout = () => {
     vm.proxy.$router.push('/');
   }
 };
+
+onMounted(() => {
+  const { get } = useCookies(['stegosaurus']);
+  if (!get('stegosaurus')) {
+    store.commit('authStore/clearUser');
+  }
+});
 </script>
